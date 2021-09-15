@@ -18,6 +18,7 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 Currently using github pages.  To manually deploy:
 ```sh
+yarn build
 yarn export 
 yarn deploy
 ```
