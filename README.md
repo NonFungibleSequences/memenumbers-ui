@@ -23,6 +23,11 @@ yarn export
 yarn deploy
 ```
 
+Gotchas:
+- Need custom next.config.js assetPrefix and basePath (and possible link hacks)
+- Need empty .nojekyll file in the generated ```out``` path when pushing to ```gh-pages``` branch
+- Reference: [nextjs issue](https://github.com/vercel/next.js/issues/3335)
+
 ## Roadmap
 🚧 = In Progress
 ⛑ = In Testing 

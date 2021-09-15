@@ -1,17 +1,10 @@
-const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
+const uriPrefix = process.env.NODE_ENV === 'production' ? '/memeonacci-ui' : ''
 
-/** @type {import('next').NextConfig} */
-module.exports = (phase, { defaultConfig }) => {
-    if (phase === PHASE_DEVELOPMENT_SERVER) {
-        return {
-            /* development only config options here */
-            reactStrictMode: true,
-        }
-    }
-
-    return {
-        reactStrictMode: true,
-        basePath: '/memeonacci-ui',
-        assetPrefix: '/memeonacci-ui/',
-    }
+module.exports = {
+    assetPrefix: uriPrefix,
+    basePath: uriPrefix,
+    // env: {
+    //     linkPrefix: uriPrefix,
+    // },
+    generateBuildId: async () => 'current',
 }
