@@ -1,0 +1,31 @@
+{
+    "name": "memeonacci-ui",
+    "author": "NonFungibleSequences",
+    "license": "MIT",
+    "version": "0.1.0",
+    "homepage": "https://nonfungiblesequences.github.io/memeonacci-ui",
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "export": "next export",
+        "start": "next start",
+        "lint": "next lint",
+        "deploy": "gh-pages -d out"
+    },
+    "dependencies": {
+        "next": "11.1.2",
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
+        "styled-components": "^5.3.1"
+    },
+    "devDependencies": {
+        "@types/react": "17.0.21",
+        "eslint": "7.32.0",
+        "eslint-config-next": "11.1.2",
+        "gh-pages": "^3.2.3",
+        "typescript": "4.4.3"
+    },
+    "resolutions": {
+        "styled-components": "^5"
+    }
+}
