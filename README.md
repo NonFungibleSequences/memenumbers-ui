@@ -17,6 +17,7 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 ## Hosting
 
 Currently using github pages.  To manually deploy:
+
 ```sh
 yarn build
 yarn export 
@@ -24,7 +25,7 @@ yarn deploy
 ```
 
 Gotchas:
-- Need custom next.config.js assetPrefix and basePath (and possible link hacks)
+- Need custom ```next.config.js``` ```assetPrefix``` and ```basePath``` (and possible nav/link hacks)
 - Need empty .nojekyll file in the generated ```out``` path when pushing to ```gh-pages``` branch
 - Reference: [nextjs issue](https://github.com/vercel/next.js/issues/3335)
 
@@ -35,7 +36,8 @@ Gotchas:
 
 | Feature | Status |
 | ------- | :------: |
+| Web3 | 🚧 |
 | Auctions | 🚧 |
 | Assets | 🚧  |
-| Testnets | 🚧  |
+| Testnet | 🚧  |
 
