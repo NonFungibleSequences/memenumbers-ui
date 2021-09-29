@@ -1,4 +1,4 @@
-# Memeonacci Dapp Web UI
+# Memenumbers DApp Web UI
 
 Who knows, maybe we will prove the Collatz Conjecture while we are at this.
 
