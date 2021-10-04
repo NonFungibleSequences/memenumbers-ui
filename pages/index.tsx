@@ -6,33 +6,15 @@ import styles from '../styles/Home.module.css'
 import { useWeb3React } from '@web3-react/core'
 import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
-import { formatEther, parseUnits } from '@ethersproject/units'
-import { BigNumber } from '@ethersproject/bignumber'
 
 import NavBar from '../src/components/NavBar'
-
-import { AbiItem } from 'web3-utils'
+import OwnerCheck from '../src/components/OwnerCheck'
+import DutchAuction from '../src/components/DutchAuction'
+import { getContractState } from '../src/utils/contract'
 
 import Abi from '../src/abi/MemeNumbersAbi.json'
 
-const CONTRACT_ADDRESS = '0x772B29b3F93DaD79689b53f7dc434558f366dc74'
-
-interface ContractState {
-    price: BigNumber
-    forSale: [BigNumber]
-}
-
-async function getState(contract: any): Promise<ContractState> {
-    //#TODO call this in parallel
-    console.log('querying state...')
-    let price = await contract.currentPrice()
-    let forSale = await contract.getForSale()
-    // console.log('owner of 9: ', await contract.ownerOf(BigNumber.from(9)))
-    return {
-        price: price,
-        forSale: forSale,
-    }
-}
+const CONTRACT_ADDRESS = '0xA2C93D6947Ecd99b9B2cBa8A6091b790bCCC314A'
 
 const Home: NextPage = () => {
     const { library, account } = useWeb3React<Web3Provider>()
@@ -48,14 +30,14 @@ const Home: NextPage = () => {
 
         // #Hack in debug testnet, the blocks only generate on new transactions
         ;(async () => {
-            let currentState = await getState(con)
+            let currentState = await getContractState(con)
             setState(currentState)
         })()
 
-        //#NOTE 'block' isn't working?  No idea why.  Hacking with Poll for now
+        //#NOTE 'block' isn't working?  No idea why.  Hacking with Poll event for now
         library.on('poll', () => {
             ;(async () => {
-                let currentState = await getState(con)
+                let currentState = await getContractState(con)
                 setState(currentState)
             })()
         })
@@ -63,10 +45,10 @@ const Home: NextPage = () => {
         // remove listener when the component is unmounted
         return () => {
             library.removeAllListeners('block')
-            // library.removeAllListeners(toMe)
-            // library.removeAllListeners(fromMe)
         }
     }, [library, contract])
+
+    const auctionReady = library && state
 
     return (
         <div className={styles.container}>
@@ -78,18 +60,29 @@ const Home: NextPage = () => {
             </Head>
 
             <main className={styles.main}>
-                <h1 className={styles.title}>
-                    {
-                        "You don't have to be a mathematician to have a feel for numbers."
-                    }
-                </h1>
-                <p className={styles.description}>- John Forbes Nash, Jr.</p>
-                {state && (
-                    <DutchAuction
-                        {...state}
-                        contract={contract}
-                        account={account}
-                    />
+                {!library && (
+                    <div>
+                        <h1 className={styles.title}>
+                            {
+                                "You don't have to be a mathematician to have a feel for numbers."
+                            }
+                        </h1>
+
+                        <p className={styles.description}>
+                            - John Forbes Nash, Jr.
+                        </p>
+                    </div>
+                )}
+                {auctionReady && (
+                    <div>
+                        <DutchAuction
+                            {...state}
+                            contract={contract}
+                            account={account}
+                        />
+                        <p />
+                        {contract && <OwnerCheck contract={contract} />}
+                    </div>
                 )}
             </main>
 
@@ -109,52 +102,6 @@ const Home: NextPage = () => {
                     Github
                 </a>
             </footer>
-        </div>
-    )
-}
-
-interface AuctionProps extends ContractState {
-    contract: Contract
-    account: string
-}
-
-const DutchAuction: React.FC<AuctionProps & Contract> = ({
-    price,
-    forSale,
-    contract,
-    account,
-}) => {
-    const [num, setNum] = useState('')
-    const handleSubmit = async (evt: any) => {
-        evt.preventDefault()
-        console.log(`Submitting Number ${num}`)
-        try {
-            console.log(price)
-            let res = await contract.mint(account, BigNumber.from(num), {
-                value: price.mul(2),
-            })
-            console.log('mint result:', res)
-        } catch (e) {
-            console.log(`tx response: ${e}`)
-        }
-    }
-
-    return (
-        <div>
-            <p>forSale: {forSale.map((n: any) => n.toString()).join(', ')}</p>
-            <p>price: {formatEther(price)}</p>
-
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Buy Number:
-                    <input
-                        type="text"
-                        value={num}
-                        onChange={(e) => setNum(e.target.value)}
-                    />
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
         </div>
     )
 }
