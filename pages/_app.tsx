@@ -6,6 +6,7 @@ import '../styles/globals.css'
 
 import { Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import { ContractProvider } from '../src/hooks/useContract'
 
 function getLibrary(provider: any): Web3Provider {
     const library = new Web3Provider(provider)
@@ -24,7 +25,9 @@ function MyApp({ Component, pageProps }: Props) {
 
     return (
         <Web3ReactProvider getLibrary={getLibrary}>
-            <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
+            <ContractProvider>
+                <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
+            </ContractProvider>
         </Web3ReactProvider>
     )
 }

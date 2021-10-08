@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Link from 'next/link'
-
-import { injected } from '../utils/connectors'
 import {
     Web3ReactProvider,
     useWeb3React,
@@ -16,6 +14,8 @@ import { Web3Provider } from '@ethersproject/providers'
 import { formatEther } from '@ethersproject/units'
 
 import { Spinner } from './Spinner'
+import { injected } from '../utils/connectors'
+import { useEagerWeb3 } from '../hooks/useEagerWeb3'
 
 const Nav = styled.nav`
     max-width: 56em;
@@ -44,6 +44,7 @@ const A = styled.a`
 const NavBar = () => {
     const [activatingConnector, setActivatingConnector] = useState<any>()
     const context = useWeb3React<Web3Provider>()
+    const didEager = useEagerWeb3()
     const {
         connector,
         library,
@@ -54,8 +55,6 @@ const NavBar = () => {
         active,
         error,
     } = context
-
-    console.log(`error: ${error}`)
 
     // handle logic to recognize the connector currently being activated
     useEffect(() => {
@@ -73,6 +72,7 @@ const NavBar = () => {
 
     // const disabled =
     //     !triedEager || !!activatingConnector || connected || !!error
+    if (error) alert(error.toString())
 
     return (
         <Nav>

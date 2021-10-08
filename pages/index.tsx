@@ -10,43 +10,62 @@ import { Web3Provider } from '@ethersproject/providers'
 import NavBar from '../src/components/NavBar'
 import OwnerCheck from '../src/components/OwnerCheck'
 import DutchAuction from '../src/components/DutchAuction'
+import Operations from '../src/components/Operations'
+
 import { getContractState } from '../src/utils/contract'
-
 import Abi from '../src/abi/MemeNumbersAbi.json'
+import Config from '../src/config'
 
-const CONTRACT_ADDRESS = '0xA2C93D6947Ecd99b9B2cBa8A6091b790bCCC314A'
+//https://ethereum.stackexchange.com/questions/94601/trouble-with-web3-eth-contract-abi-usage-with-typescript
 
 const Home: NextPage = () => {
-    const { library, account } = useWeb3React<Web3Provider>()
-    const [contract, setContract] = useState<Contract>()
+    const { library, account, chainId } = useWeb3React<Web3Provider>()
+    const [contract, setContract] = useState<Contract | null>()
     const [state, setState] = useState<any>()
 
     useEffect(() => {
-        //#HACK we will use a global provider for this
-        if (!library || contract) return
+        //#FIXME we should use a global provider for this
+        if (!library || !chainId || contract) return
+
+        const config = Config(chainId)
+
         // listen for changes on an Ethereum address
-        const con = new Contract(CONTRACT_ADDRESS, Abi, library.getSigner())
+        const con = new Contract(
+            config.contractAddress,
+            Abi,
+            library.getSigner()
+        )
         setContract(con)
 
-        // #Hack in debug testnet, the blocks only generate on new transactions
+        // #HACK in debug testnet, the blocks only generate on new transactions
+        console.log(`RELOADING WITH: ${chainId}`)
         ;(async () => {
-            let currentState = await getContractState(con)
-            setState(currentState)
-        })()
-
-        //#NOTE 'block' isn't working?  No idea why.  Hacking with Poll event for now
-        library.on('poll', () => {
-            ;(async () => {
+            try {
                 let currentState = await getContractState(con)
                 setState(currentState)
-            })()
-        })
 
+                library.on('poll', () => {
+                    ;(async () => {
+                        console.log(`RELOADING WITH: ${chainId}`)
+                        try {
+                            let currentState = await getContractState(con)
+                            setState(currentState)
+                        } catch (e) {
+                            alert(e)
+                        }
+                    })()
+                })
+            } catch (e) {
+                alert(e)
+            }
+        })()
+
+        // #NOTE 'block' isn't working?  No idea why.  Hacking with Poll event for now
         // remove listener when the component is unmounted
         return () => {
             library.removeAllListeners('block')
         }
-    }, [library, contract])
+    }, [library, contract, chainId])
 
     const auctionReady = library && state
 
@@ -54,13 +73,13 @@ const Home: NextPage = () => {
         <div className={styles.container}>
             <NavBar />
             <Head>
-                <title>Memeonacci App</title>
+                <title>MemeNumbers</title>
                 <meta name="description" content="eth" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <main className={styles.main}>
-                {!library && (
+                {!auctionReady && (
                     <div>
                         <h1 className={styles.title}>
                             {
@@ -82,6 +101,9 @@ const Home: NextPage = () => {
                         />
                         <p />
                         {contract && <OwnerCheck contract={contract} />}
+                        {contract && (
+                            <Operations account={account} contract={contract} />
+                        )}
                     </div>
                 )}
             </main>

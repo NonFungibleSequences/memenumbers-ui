@@ -17,14 +17,13 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
     contract,
     account,
 }) => {
-    const [num, setNum] = useState('')
-    const [bidPrice, setBidPrice] = useState(formatEther(price))
+    const [num, setNum] = useState(forSale[0].toString())
 
-    const handleSubmit = async (evt: any) => {
+    const onSelectNum = (selection: string) => setNum(selection)
+    const handleMint = async (evt: any) => {
         evt.preventDefault()
         try {
             let selectedNum = BigNumber.from(num)
-            let selectedPrice = parseUnits(bidPrice, 'ether')
 
             let exists = false
             for (var i = 0; i < forSale.length; i++) {
@@ -40,7 +39,7 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             }
 
             let res = await contract.mint(account, selectedNum, {
-                value: selectedPrice,
+                value: price,
             })
 
             console.log('mint result:', res)
@@ -49,14 +48,22 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
         }
     }
 
+    const handleMintAll = async (evt: any) => {
+        evt.preventDefault()
+    }
+
     // #FIXME
     // the bidPrice loop conversion is nasty but BigNumber can't parse decimals and formatEther gives decimals
     // so, figure something out later
     return (
         <div>
-            <AuctionItem price={price} forSale={forSale} />
+            <AuctionItem
+                price={price}
+                forSale={forSale}
+                onSelect={onSelectNum}
+            />
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleMint}>
                 <label>
                     Number:
                     <input
@@ -65,16 +72,8 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
                         onChange={(e) => setNum(e.target.value)}
                     />
                 </label>
-
-                <label>
-                    Bid Price:
-                    <input
-                        type="text"
-                        value={bidPrice}
-                        onChange={(e) => setBidPrice(e.target.value)}
-                    />
-                </label>
-                <input type="submit" value="Bid" />
+                <input type="submit" value="Mint" />
+                <button onClick={handleMintAll}>Mint All</button>
             </form>
         </div>
     )
