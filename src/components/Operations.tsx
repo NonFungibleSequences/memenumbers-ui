@@ -1,6 +1,9 @@
 import { useState } from 'react'
+
 import { Contract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
+
+import { Select, Submit, LongInput, Field } from '../components'
 
 async function confirmOwnership(
     contract: Contract,
@@ -77,16 +80,14 @@ const Operations: React.FC<Props> = ({ account, contract }) => {
 
     return (
         <div>
-            <p>Ops:</p>
+            <Field>Ops:</Field>
             <form onSubmit={handlePreview}>
-                <label>
-                    <input
-                        type="text"
-                        value={num}
-                        onChange={(e) => setNum(e.target.value)}
-                    />
-                </label>
-                <select
+                <LongInput
+                    type="text"
+                    value={num}
+                    onChange={(e) => setNum(e.target.value)}
+                />
+                <Select
                     id="ops"
                     name="ops"
                     value={op}
@@ -96,15 +97,13 @@ const Operations: React.FC<Props> = ({ account, contract }) => {
                     <option value="s">Subtract</option>
                     <option value="m">Multiply</option>
                     <option value="d">Divide</option>
-                </select>
-                <label>
-                    <input
-                        type="text"
-                        value={numTwo}
-                        onChange={(e) => setNumTwo(e.target.value)}
-                    />
-                </label>
-                <input type="submit" value="Preview" />
+                </Select>
+                <LongInput
+                    type="text"
+                    value={numTwo}
+                    onChange={(e) => setNumTwo(e.target.value)}
+                />
+                <Submit value="Preview" />
             </form>
             {state && (
                 <button

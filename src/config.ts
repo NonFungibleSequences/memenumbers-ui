@@ -14,27 +14,28 @@ export const supportedChains = [
 ]
 
 type Config = {
-    contractAddress: string
+    contractAddress?: string
 }
 
 const config = {
     mainnet: {
-        contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        contractAddress: undefined,
     },
     ropsten: {
-        contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        contractAddress: undefined,
     },
     kovan: {
-        contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        contractAddress: undefined,
     },
     rinkeby: {
-        contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        // contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        contractAddress: '0xC628eCbAf90Ab0062516ca556c0DE9b382a67BbD',
     },
     amino: {
-        contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        contractAddress: undefined,
     },
     gethDev: {
-        contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
+        contractAddress: '0x5640545abF63e10e09d1a8dCC5A3caE951872295',
     },
 }
 

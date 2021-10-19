@@ -32,12 +32,13 @@ Gotchas:
 ## Roadmap
 🚧 = In Progress
 ⛑ = In Testing 
+
 🚀 = Shipped!
 
 | Feature | Status |
 | ------- | :------: |
-| Web3 | 🚧 |
-| Auctions | 🚧 |
+| Auctions | ⛑  |
+| Web3 | ⛑  |
+| Contract Functions | ⛑ |
 | Assets | 🚧  |
-| Testnet | 🚧  |
 

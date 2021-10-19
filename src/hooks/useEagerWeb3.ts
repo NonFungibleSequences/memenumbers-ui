@@ -8,18 +8,20 @@ export function useEagerWeb3() {
     const [tried, setTried] = useState(false)
 
     useEffect(() => {
-        injected.isAuthorized().then((isAuthorized: boolean) => {
+        ;(async () => {
+            const isAuthorized = await injected.isAuthorized()
+            console.log(`authorized: ${isAuthorized}`)
             if (isAuthorized) {
-                activate(injected, undefined, true).catch(() => {
-                    setTried(true)
-                })
-            } else {
-                setTried(true)
+                try {
+                    await activate(injected, undefined, true)
+                } catch (e) {
+                    console.log(`eager activation failed: ${e}`)
+                }
             }
-        })
-    }, []) // intentionally only running on mount (make sure it's only mounted once :))
+            setTried(true)
+        })()
+    }, [])
 
-    // if the connection worked, wait until we get confirmation of that to flip the flag
     useEffect(() => {
         if (!tried && active) {
             setTried(true)

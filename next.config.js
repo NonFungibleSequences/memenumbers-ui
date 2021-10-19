@@ -1,4 +1,4 @@
-const uriPrefix = process.env.NODE_ENV === 'production' ? '/memeonacci-ui' : ''
+const uriPrefix = process.env.NODE_ENV === 'production' ? '/memenumbers-ui' : ''
 
 module.exports = {
     assetPrefix: uriPrefix,

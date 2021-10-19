@@ -5,19 +5,21 @@ import { formatEther, parseUnits } from '@ethersproject/units'
 
 import { ContractState } from '../utils/contract'
 import AuctionItem from './AuctionItem'
+import { FieldSet, Field, LongInput, Submit, Button } from '../components'
 
-interface DutchAuctionProps extends ContractState {
+interface DutchAuctionProps {
     contract: Contract
+    contractState: ContractState
     account: string
 }
 
 const DutchAuction: React.FC<DutchAuctionProps> = ({
-    price,
-    forSale,
     contract,
+    contractState,
     account,
 }) => {
-    const [num, setNum] = useState(forSale[0].toString())
+    const { forSale, price } = contractState
+    const [num, setNum] = useState(trySelectSale(contractState))
 
     const onSelectNum = (selection: string) => setNum(selection)
     const handleMint = async (evt: any) => {
@@ -27,7 +29,7 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
 
             let exists = false
             for (var i = 0; i < forSale.length; i++) {
-                if (forSale[i].eq(selectedNum)) {
+                if (forSale[i].number.eq(selectedNum)) {
                     exists = true
                     break
                 }
@@ -57,26 +59,30 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
     // so, figure something out later
     return (
         <div>
-            <AuctionItem
-                price={price}
-                forSale={forSale}
-                onSelect={onSelectNum}
-            />
+            <AuctionItem contractState={contractState} onSelect={onSelectNum} />
 
             <form onSubmit={handleMint}>
-                <label>
-                    Number:
-                    <input
+                <FieldSet>
+                    <Field>Mint Number:</Field>
+                    <LongInput
                         type="text"
                         value={num}
                         onChange={(e) => setNum(e.target.value)}
                     />
-                </label>
-                <input type="submit" value="Mint" />
-                <button onClick={handleMintAll}>Mint All</button>
+                    <Submit value="Mint" />
+                    <Button onClick={handleMintAll}>Mint All</Button>
+                </FieldSet>
             </form>
         </div>
     )
+}
+
+function trySelectSale({ forSale }: ContractState): string | undefined {
+    for (var i = 0; i < forSale.length; i++) {
+        const item = forSale[i]
+        if (item.isAvailable) return item.number.toString()
+    }
+    return
 }
 
 export default DutchAuction

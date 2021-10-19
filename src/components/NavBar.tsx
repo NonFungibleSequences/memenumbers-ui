@@ -1,21 +1,13 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import Link from 'next/link'
-import {
-    Web3ReactProvider,
-    useWeb3React,
-    UnsupportedChainIdError,
-} from '@web3-react/core'
-import {
-    NoEthereumProviderError,
-    UserRejectedRequestError as UserRejectedRequestErrorInjected,
-} from '@web3-react/injected-connector'
-import { Web3Provider } from '@ethersproject/providers'
-import { formatEther } from '@ethersproject/units'
 
+import { useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
+
+import useContract from '../hooks/useContract'
 import { Spinner } from './Spinner'
 import { injected } from '../utils/connectors'
-import { useEagerWeb3 } from '../hooks/useEagerWeb3'
 
 const Nav = styled.nav`
     max-width: 56em;
@@ -42,33 +34,14 @@ const A = styled.a`
 
 //TODO handle some page state if the provider isn't successful
 const NavBar = () => {
-    const [activatingConnector, setActivatingConnector] = useState<any>()
-    const context = useWeb3React<Web3Provider>()
-    const didEager = useEagerWeb3()
-    const {
-        connector,
-        library,
-        chainId,
-        account,
-        activate,
-        deactivate,
-        active,
-        error,
-    } = context
+    const { activate, error } = useWeb3React<Web3Provider>()
+    const [{ state }, _unused] = useContract()
 
-    // handle logic to recognize the connector currently being activated
-    useEffect(() => {
-        if (activatingConnector && activatingConnector === connector) {
-            console.log('setting undefined')
-            setActivatingConnector(undefined)
-        }
-    }, [activatingConnector, connector])
-
-    const currentConnector = injected
-    const activating = currentConnector === activatingConnector
-    const connected = currentConnector === connector
-    const disabled = !!activatingConnector
-    const ready = connected && active
+    // const currentConnector = injected
+    // const activating = currentConnector === activatingConnector
+    // const connected = currentConnector === connector
+    // const disabled = !!activatingConnector
+    // const ready = connected && active
 
     // const disabled =
     //     !triedEager || !!activatingConnector || connected || !!error
@@ -83,46 +56,47 @@ const NavBar = () => {
                     </Link>
                 </Li>
             </Ul>
-            <button
-                style={{
-                    height: '3rem',
-                    borderRadius: '1rem',
-                    borderColor: activating
-                        ? 'orange'
-                        : connected
-                        ? 'green'
-                        : 'unset',
-                    cursor: disabled ? 'unset' : 'pointer',
-                    position: 'relative',
-                }}
-                disabled={disabled}
-                key="injected"
-                onClick={() => {
-                    setActivatingConnector(currentConnector)
-                    activate(injected)
-                }}
-            >
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: '0',
-                        left: '0',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: 'black',
-                        margin: '0 0 0 1rem',
-                    }}
-                >
-                    {activating && (
-                        <Spinner
-                            color={'black'}
-                            style={{ height: '25%', marginLeft: '-1rem' }}
-                        />
-                    )}
-                </div>
-                {ready ? 'Connected' : 'Connect Wallet'}
-            </button>
+
+            {/* <button */}
+            {/*     style={{ */}
+            {/*         height: '3rem', */}
+            {/*         borderRadius: '1rem', */}
+            {/*         borderColor: activating */}
+            {/*             ? 'orange' */}
+            {/*             : connected */}
+            {/*             ? 'green' */}
+            {/*             : 'unset', */}
+            {/*         cursor: disabled ? 'unset' : 'pointer', */}
+            {/*         position: 'relative', */}
+            {/*     }} */}
+            {/*     disabled={disabled} */}
+            {/*     key="injected" */}
+            {/*     onClick={() => { */}
+            {/*         setActivatingConnector(currentConnector) */}
+            {/*         activate(injected) */}
+            {/*     }} */}
+            {/* > */}
+            {/*     <div */}
+            {/*         style={{ */}
+            {/*             position: 'absolute', */}
+            {/*             top: '0', */}
+            {/*             left: '0', */}
+            {/*             height: '100%', */}
+            {/*             display: 'flex', */}
+            {/*             alignItems: 'center', */}
+            {/*             color: 'black', */}
+            {/*             margin: '0 0 0 1rem', */}
+            {/*         }} */}
+            {/*     > */}
+            {/*         {activating && ( */}
+            {/*             <Spinner */}
+            {/*                 color={'black'} */}
+            {/*                 style={{ height: '25%', marginLeft: '-1rem' }} */}
+            {/*             /> */}
+            {/*         )} */}
+            {/*     </div> */}
+            {/*     {ready ? 'Connected' : 'Connect Wallet'} */}
+            {/* </button> */}
         </Nav>
     )
 }

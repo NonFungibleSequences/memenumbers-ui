@@ -1,131 +1,97 @@
-import { useState, useEffect } from 'react'
-import type { NextPage } from 'next'
+import type { Page } from '../src/types/PageComponent'
+
+import { useState, useEffect, ReactElement } from 'react'
+import styled from 'styled-components'
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useRouter } from 'next/router'
 
 import { useWeb3React } from '@web3-react/core'
-import { Contract } from '@ethersproject/contracts'
-import { Web3Provider } from '@ethersproject/providers'
 
-import NavBar from '../src/components/NavBar'
+import Layout from '../src/components/Layout'
 import OwnerCheck from '../src/components/OwnerCheck'
 import DutchAuction from '../src/components/DutchAuction'
 import Operations from '../src/components/Operations'
 
-import { getContractState } from '../src/utils/contract'
-import Abi from '../src/abi/MemeNumbersAbi.json'
-import Config from '../src/config'
+import useContract, { State as ContractState } from '../src/hooks/useContract'
 
-//https://ethereum.stackexchange.com/questions/94601/trouble-with-web3-eth-contract-abi-usage-with-typescript
+const Home: Page = () => {
+    const { basePath } = useRouter()
+    const { account } = useWeb3React()
+    const [{ state, contract }, contractState] = useContract()
 
-const Home: NextPage = () => {
-    const { library, account, chainId } = useWeb3React<Web3Provider>()
-    const [contract, setContract] = useState<Contract | null>()
-    const [state, setState] = useState<any>()
+    const auctionReady =
+        state === ContractState.Ready && contractState && account && contract
 
-    useEffect(() => {
-        //#FIXME we should use a global provider for this
-        if (!library || !chainId || contract) return
-
-        const config = Config(chainId)
-
-        // listen for changes on an Ethereum address
-        const con = new Contract(
-            config.contractAddress,
-            Abi,
-            library.getSigner()
-        )
-        setContract(con)
-
-        // #HACK in debug testnet, the blocks only generate on new transactions
-        console.log(`RELOADING WITH: ${chainId}`)
-        ;(async () => {
-            try {
-                let currentState = await getContractState(con)
-                setState(currentState)
-
-                library.on('poll', () => {
-                    ;(async () => {
-                        console.log(`RELOADING WITH: ${chainId}`)
-                        try {
-                            let currentState = await getContractState(con)
-                            setState(currentState)
-                        } catch (e) {
-                            alert(e)
-                        }
-                    })()
-                })
-            } catch (e) {
-                alert(e)
-            }
-        })()
-
-        // #NOTE 'block' isn't working?  No idea why.  Hacking with Poll event for now
-        // remove listener when the component is unmounted
-        return () => {
-            library.removeAllListeners('block')
-        }
-    }, [library, contract, chainId])
-
-    const auctionReady = library && state
-
+    // #FIXME the basepath for the favicon is a hack for ghpages because it is hosted at a
+    // specific project path.  Should probably be removed later
     return (
-        <div className={styles.container}>
-            <NavBar />
+        <div>
             <Head>
                 <title>MemeNumbers</title>
                 <meta name="description" content="eth" />
-                <link rel="icon" href="/favicon.ico" />
+                <link
+                    rel="icon"
+                    href={
+                        basePath?.charAt(0) === '/'
+                            ? `${basePath}favicon.ico`
+                            : '/favicon.ico'
+                    }
+                />
             </Head>
 
-            <main className={styles.main}>
-                {!auctionReady && (
-                    <div>
-                        <h1 className={styles.title}>
-                            {
-                                "You don't have to be a mathematician to have a feel for numbers."
-                            }
-                        </h1>
+            <Main>
+                {!auctionReady && <Web2 />}
 
-                        <p className={styles.description}>
-                            - John Forbes Nash, Jr.
-                        </p>
-                    </div>
-                )}
                 {auctionReady && (
                     <div>
                         <DutchAuction
-                            {...state}
+                            contractState={contractState}
                             contract={contract}
                             account={account}
                         />
-                        <p />
+
+                        <Segment />
                         {contract && <OwnerCheck contract={contract} />}
-                        {contract && (
+
+                        <Segment />
+                        {contract && account && (
                             <Operations account={account} contract={contract} />
                         )}
                     </div>
                 )}
-            </main>
-
-            <footer className={styles.footer}>
-                <a
-                    href="https://www.discord.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Discord
-                </a>
-                <a
-                    href="https://www.github.com/NonFungibleSequences"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Github
-                </a>
-            </footer>
+            </Main>
         </div>
     )
 }
 
+Home.layout = Layout
+
 export default Home
+
+const Main = styled.main`
+    // background-color: hsl(0deg 0% 10%);
+`
+
+const Segment = styled.div`
+    width: 100%;
+    height: 3px;
+    background: rgba(196, 196, 196, 1);
+    opacity: 1;
+    // position: absolute;
+    overflow: hidden;
+`
+
+// sad
+const Web2 = () => {
+    return (
+        <div>
+            <h1>
+                {
+                    "You don't have to be a mathematician to have a feel for numbers."
+                }
+            </h1>
+
+            <p>- John Forbes Nash, Jr.</p>
+        </div>
+    )
+}
