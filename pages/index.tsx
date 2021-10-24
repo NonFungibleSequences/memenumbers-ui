@@ -33,7 +33,7 @@ const Home: Page = () => {
                     rel="icon"
                     href={
                         basePath?.charAt(0) === '/'
-                            ? `${basePath}favicon.ico`
+                            ? `${basePath}/favicon.ico`
                             : '/favicon.ico'
                     }
                 />

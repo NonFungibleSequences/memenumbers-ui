@@ -41,6 +41,19 @@ export default class MyDocument extends Document {
         return (
             <Html>
                 <Head />
+                <link
+                    href="https://fonts.googleapis.com/css?family=Fredericka+the+Great&display=swap"
+                    rel="stylesheet"
+                />
+                <link
+                    href="https://fonts.googleapis.com/css?family=Pangolin&display=swap"
+                    rel="stylesheet"
+                />
+                {/* <style */}
+                {/*     dangerouslySetInnerHTML={{ */}
+                {/*         __html: fontFace, */}
+                {/*     }} */}
+                {/* /> */}
                 <body>
                     <Main />
                     <NextScript />
@@ -49,3 +62,26 @@ export default class MyDocument extends Document {
         )
     }
 }
+
+const fontFace = `
+@font-face {
+  font-family: 'Fredericka the Great';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local(''),
+       url('/memenumbers-ui/fonts/fredericka-the-great-v10-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/memenumbers-ui/fonts/fredericka-the-great-v10-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* pangolin-regular - latin */
+@font-face {
+  font-family: 'Pangolin';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local(''),
+       url('/memenumbers-ui/fonts/pangolin-v6-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('/memenumbers-ui/fonts/pangolin-v6-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+`

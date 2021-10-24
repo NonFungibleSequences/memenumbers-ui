@@ -9,9 +9,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { ContractProvider } from '../src/hooks/useContract'
 
 const GlobalStyle = createGlobalStyle`
-@import url("https://fonts.googleapis.com/css?family=Fredericka+the+Great&display=swap");
-@import url("https://fonts.googleapis.com/css?family=Pangolin&display=swap");
-
 html * {
 	color: rgba(255,255,255,1);
 	font-family: Fredericka the Great;

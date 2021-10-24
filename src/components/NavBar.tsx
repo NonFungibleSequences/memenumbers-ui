@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 
-import useContract from '../hooks/useContract'
+import useContract, { State as ContractState } from '../hooks/useContract'
 import { Spinner } from './Spinner'
 import { injected } from '../utils/connectors'
+import { Button } from '../components'
 
 const Nav = styled.nav`
     max-width: 56em;
@@ -32,6 +33,11 @@ const A = styled.a`
     }
 `
 
+// const Button = styled.button`
+//     height: '3rem';
+//     border-radius: '1rem';
+// `
+
 //TODO handle some page state if the provider isn't successful
 const NavBar = () => {
     const { activate, error } = useWeb3React<Web3Provider>()
@@ -45,58 +51,47 @@ const NavBar = () => {
 
     // const disabled =
     //     !triedEager || !!activatingConnector || connected || !!error
-    if (error) alert(error.toString())
+    const ready = state === ContractState.Ready
+    if (error) console.log(error)
 
     return (
         <Nav>
             <Ul>
                 <Li>
                     <Link href="/" passHref>
-                        <A>Home</A>
+                        <A>MemeNumbers</A>
                     </Link>
                 </Li>
             </Ul>
 
-            {/* <button */}
-            {/*     style={{ */}
-            {/*         height: '3rem', */}
-            {/*         borderRadius: '1rem', */}
-            {/*         borderColor: activating */}
-            {/*             ? 'orange' */}
-            {/*             : connected */}
-            {/*             ? 'green' */}
-            {/*             : 'unset', */}
-            {/*         cursor: disabled ? 'unset' : 'pointer', */}
-            {/*         position: 'relative', */}
-            {/*     }} */}
-            {/*     disabled={disabled} */}
-            {/*     key="injected" */}
-            {/*     onClick={() => { */}
-            {/*         setActivatingConnector(currentConnector) */}
-            {/*         activate(injected) */}
-            {/*     }} */}
-            {/* > */}
-            {/*     <div */}
-            {/*         style={{ */}
-            {/*             position: 'absolute', */}
-            {/*             top: '0', */}
-            {/*             left: '0', */}
-            {/*             height: '100%', */}
-            {/*             display: 'flex', */}
-            {/*             alignItems: 'center', */}
-            {/*             color: 'black', */}
-            {/*             margin: '0 0 0 1rem', */}
-            {/*         }} */}
-            {/*     > */}
-            {/*         {activating && ( */}
-            {/*             <Spinner */}
-            {/*                 color={'black'} */}
-            {/*                 style={{ height: '25%', marginLeft: '-1rem' }} */}
-            {/*             /> */}
-            {/*         )} */}
-            {/*     </div> */}
-            {/*     {ready ? 'Connected' : 'Connect Wallet'} */}
-            {/* </button> */}
+            <Button
+                disabled={ready}
+                key="connect"
+                onClick={() => {
+                    activate(injected)
+                }}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: 'black',
+                        margin: '0 0 0 1rem',
+                    }}
+                >
+                    {state === ContractState.ActivatingConnector && (
+                        <Spinner
+                            color={'black'}
+                            style={{ height: '25%', marginLeft: '-1rem' }}
+                        />
+                    )}
+                </div>
+                {ready ? 'Connected' : 'Connect Wallet'}
+            </Button>
         </Nav>
     )
 }

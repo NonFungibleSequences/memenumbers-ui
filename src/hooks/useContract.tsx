@@ -13,7 +13,7 @@ import Abi from '../abi/MemeNumbersAbi.json'
 import Config from '../config'
 
 export const enum State {
-    EagerConnecting = 'Eagerconnecting',
+    EagerConnecting = 'EagerConnecting',
     AwaitingConnect = 'AwaitingConnect',
     ActivatingConnector = 'ActivatingConnector',
     ContractUnavailable = 'ContractUnavailable',

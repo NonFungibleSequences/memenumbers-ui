@@ -14,6 +14,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
+## Fonts
+
+Downloaded and CSS Injected via [this app](http://google-webfonts-helper.herokuapp.com/)
+
 ## Hosting
 
 Currently using github pages.  To manually deploy:
