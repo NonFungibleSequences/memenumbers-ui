@@ -15,19 +15,24 @@ interface Item {
 export async function getContractState(
     contract: Contract
 ): Promise<ContractState> {
-    //#TODO call this in parallel
     console.log('querying state...')
     //#FIXME auctionStarted and getForSale doesn't need to be loaded all the time
-    const auctionStarted = await contract.auctionStarted()
-    const price = await contract.currentPrice()
-    const sale = await contract.getForSale()
+    const [auctionStarted, price, sale] = await Promise.all([
+        contract.auctionStarted(),
+        contract.currentPrice(),
+        contract.getForSale(),
+    ])
 
-    const forSale: Item[] = []
-    for (var i = 0; i < sale.length; i++) {
-        const number = sale[i]
-        const isAvailable = await contract.isForSale(number)
-        forSale.push({ number, isAvailable })
-    }
+    const availability: boolean[] = await Promise.all(
+        sale.map((x: BigNumber) => {
+            return contract.isForSale(x)
+        })
+    )
+
+    const forSale: Item[] = sale.map((number: BigNumber, i: number) => ({
+        number,
+        isAvailable: availability[i],
+    }))
 
     return {
         auctionStarted,

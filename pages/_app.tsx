@@ -22,7 +22,7 @@ body {
 
 function getLibrary(provider: any): Web3Provider {
     const library = new Web3Provider(provider)
-    library.pollingInterval = 3000
+    library.pollingInterval = 12000
     return library
 }
 
@@ -35,9 +35,9 @@ function MyApp({ Component, pageProps }: Props) {
     const getLayout = Component.getLayout || ((page) => page)
     const Layout = Component.layout ?? Fragment
 
-    console.log(getLayout)
-    console.log(Component)
-    console.log(Layout)
+    // console.log(getLayout)
+    // console.log(Component)
+    // console.log(Layout)
 
     return (
         <Web3ReactProvider getLibrary={getLibrary}>

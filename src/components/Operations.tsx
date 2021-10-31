@@ -80,7 +80,7 @@ const Operations: React.FC<Props> = ({ account, contract }) => {
 
     return (
         <div>
-            <Field>Ops:</Field>
+            <Field>Burn Ops:</Field>
             <form onSubmit={handlePreview}>
                 <LongInput
                     type="text"

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import styled from 'styled-components'
 
 import { Contract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'

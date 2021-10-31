@@ -1,11 +1,16 @@
 import { useState } from 'react'
+import styled from 'styled-components'
 import { Contract } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
-import { formatEther, parseUnits } from '@ethersproject/units'
 
 import { ContractState } from '../utils/contract'
 import AuctionItem from './AuctionItem'
-import { FieldSet, Field, LongInput, Submit, Button } from '../components'
+import { Field, LongInput, Submit, Button } from '../components'
+
+const Selection = styled.div`
+    display: inline-block;
+    padding-right: 10px;
+`
 
 interface DutchAuctionProps {
     contract: Contract
@@ -52,6 +57,15 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
 
     const handleMintAll = async (evt: any) => {
         evt.preventDefault()
+        try {
+            let res = await contract.mintAll(account, {
+                value: price,
+            })
+
+            console.log('mint all result:', res)
+        } catch (e) {
+            console.log(`tx response: ${e}`)
+        }
     }
 
     // #FIXME
@@ -62,16 +76,18 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             <AuctionItem contractState={contractState} onSelect={onSelectNum} />
 
             <form onSubmit={handleMint}>
-                <FieldSet>
-                    <Field>Mint Number:</Field>
-                    <LongInput
-                        type="text"
-                        value={num}
-                        onChange={(e) => setNum(e.target.value)}
-                    />
+                <Field>Mint Number:</Field>
+                <LongInput
+                    type="text"
+                    value={num}
+                    onChange={(e) => setNum(e.target.value)}
+                />
+                <Selection>
                     <Submit value="Mint" />
+                </Selection>
+                <Selection>
                     <Button onClick={handleMintAll}>Mint All</Button>
-                </FieldSet>
+                </Selection>
             </form>
         </div>
     )

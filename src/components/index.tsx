@@ -25,29 +25,17 @@ export const FieldSet = styled.fieldset`
 
 export const Input = styled.input`
     font-size: inherit;
+    font-family: Pangolin;
+    font-weight: Regular;
     padding: 0.3em 0.4em;
     margin: 0.1em 0.2em;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
-    border: 1px solid #f90;
-    background-color: #fff;
 
-    // color: rgba(255, 255, 255, 1);
-    // background: rgba(51, 51, 51, 1);
-    // font-family: Pangolin;
-    // font-weight: Regular;
-    // font-size: 20px;
-    // opacity: 1;
-    // border: 2px solid rgba(255, 255, 255, 1);
-
-    // -webkit-box-sizing: border-box;
-    // -moz-box-sizing: border-box;
-    // box-sizing: border-box;
-
-    // ::placeholder {
-    //     color: rgba(142, 142, 142, 1);
-    // }
+    color: rgba(255, 255, 255, 1);
+    background: rgba(51, 51, 51, 1);
+    border: 2px solid rgba(255, 255, 255, 1);
 `
 
 export const Select = styled.select`

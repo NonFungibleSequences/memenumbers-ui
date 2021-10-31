@@ -1,6 +1,5 @@
 import type { Page } from '../src/types/PageComponent'
 
-import { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -17,7 +16,7 @@ import useContract, { State as ContractState } from '../src/hooks/useContract'
 const Home: Page = () => {
     const { basePath } = useRouter()
     const { account } = useWeb3React()
-    const [{ state, contract }, contractState] = useContract()
+    const [{ state, contract }, _, contractState] = useContract()
 
     const auctionReady =
         state === ContractState.Ready && contractState && account && contract
@@ -39,11 +38,16 @@ const Home: Page = () => {
                 />
             </Head>
 
+            {/* <Main> */}
+            {/*     <Web2 /> */}
+            {/* </Main> */}
+
             <Main>
                 {!auctionReady && <Web2 />}
 
                 {auctionReady && (
                     <div>
+                        <Segment />
                         <DutchAuction
                             contractState={contractState}
                             contract={contract}

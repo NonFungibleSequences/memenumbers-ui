@@ -10,7 +10,7 @@ export function useEagerWeb3() {
     useEffect(() => {
         ;(async () => {
             const isAuthorized = await injected.isAuthorized()
-            console.log(`authorized: ${isAuthorized}`)
+            // console.log(`authorized: ${isAuthorized}`)
             if (isAuthorized) {
                 try {
                     await activate(injected, undefined, true)
