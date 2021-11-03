@@ -1,0 +1,10 @@
+compatibility_date = "2021-11-02"
+name = "memenumbers"
+type = "webpack"
+account_id = "9bad3c95f3c289b37b1e1bcf9987fd76"
+zone_id = "0039def7a97aeb8c79335d3d87516186"
+routes = ["memenumbers.com/*", "www.memenumbers.com/*"]
+
+[site]
+bucket = "./out"
+entry-point = "workers-site"

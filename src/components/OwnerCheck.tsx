@@ -7,9 +7,10 @@ import { Submit, LongInput, Field } from '../components'
 
 interface OwnerCheckProps {
     contract: Contract
+    account?: string | null
 }
 
-const OwnerCheck: React.FC<OwnerCheckProps> = ({ contract }) => {
+const OwnerCheck: React.FC<OwnerCheckProps> = ({ account, contract }) => {
     const [num, setNum] = useState('')
     const [status, setStatus] = useState('')
 
@@ -17,7 +18,8 @@ const OwnerCheck: React.FC<OwnerCheckProps> = ({ contract }) => {
         evt.preventDefault()
         try {
             let res = await contract.ownerOf(BigNumber.from(num))
-            setStatus(`${num} is owned by: ${res}`)
+            let isMe = account && account === res
+            setStatus(`${num} is owned by: ${res}${isMe ? ' (you!)' : ''}`)
         } catch (e) {
             setStatus(`${num} is available`)
         }
@@ -32,7 +34,7 @@ const OwnerCheck: React.FC<OwnerCheckProps> = ({ contract }) => {
                     value={num}
                     onChange={(e) => setNum(e.target.value)}
                 />
-                <Submit value="Check" />
+                <Submit disabled={num === ''} value="Check" />
             </form>
             <p>{status}</p>
         </div>

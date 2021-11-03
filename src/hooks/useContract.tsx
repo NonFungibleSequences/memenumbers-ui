@@ -3,6 +3,7 @@ import React, { useEffect, useContext, useState, useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Contract } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
+import { InfuraProvider } from '@ethersproject/providers'
 
 import { ContractState } from '../utils/contract'
 import { getContractState } from '../utils/contract'
@@ -47,6 +48,13 @@ const useContract = () => {
     return useContext(ContractContext)
 }
 
+const defaultProvider = new InfuraProvider(1)
+const defaultContract = new Contract(
+    Config(1).contractAddress!,
+    Abi,
+    defaultProvider
+)
+
 // #FIXME this component is a little too messy/ugly and doesn't wrap cleanly due
 // to using the react-web3 library.  We could probably do better using our own web3 state
 // machine (xstate or redux).
@@ -73,12 +81,12 @@ export const ContractProvider: React.FC<{}> = ({ children }) => {
     // handle logic to recognize the connector currently being activated
     useEffect(() => {
         if (activatingConnector && activatingConnector === connector) {
-            console.log(
-                'setting undefined',
-                activatingConnector,
-                connector,
-                active
-            )
+            // console.log(
+            //     'setting undefined',
+            //     activatingConnector,
+            //     connector,
+            //     active
+            // )
             if (active) {
                 // user clicked allow
                 setState((prev) => ({
@@ -87,7 +95,7 @@ export const ContractProvider: React.FC<{}> = ({ children }) => {
                 }))
             }
             if (error) {
-                alert(error)
+                console.error('activating connector error')
             }
             setActivatingConnector(undefined)
         }
@@ -111,6 +119,16 @@ export const ContractProvider: React.FC<{}> = ({ children }) => {
             // we need user interaction to connect the wallet
             if (didEagerConnect && state.state === State.EagerConnecting) {
                 setState((prev) => ({ ...prev, state: State.AwaitingConnect }))
+                ;(async () => {
+                    //#HACK temporary query
+                    let currentState = await getContractState(defaultContract)
+                    setContractState(currentState)
+                    setState((prev) => ({
+                        ...prev,
+                        chainId: 1,
+                        contract: defaultContract,
+                    }))
+                })()
             }
             //user disconnected wallet
             if (state.state === State.Ready) {
@@ -119,12 +137,15 @@ export const ContractProvider: React.FC<{}> = ({ children }) => {
                 setState((prev) => ({
                     ...prev,
                     state: State.AwaitingConnect,
-                    chainId: undefined,
-                    contract: undefined,
+                    chainId: 1,
+                    contract: defaultContract,
                 }))
             }
             return
         }
+
+        if (account && state.account && account !== state.account)
+            setState((prev) => ({ ...prev, account: account }))
 
         //handle contract change on first init or network selection
         if (state.chainId && chainId === state.chainId) return

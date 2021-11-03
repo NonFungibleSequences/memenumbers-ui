@@ -5,7 +5,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ContractState } from '../utils/contract'
 import AuctionItem from './AuctionItem'
-import { Field, LongInput, Submit, Button } from '../components'
+import { Status, Field, LongInput, Submit, Button } from '../components'
+import { Result } from '../types'
 
 const Selection = styled.div`
     display: inline-block;
@@ -15,7 +16,7 @@ const Selection = styled.div`
 interface DutchAuctionProps {
     contract: Contract
     contractState: ContractState
-    account: string
+    account?: string | null
 }
 
 const DutchAuction: React.FC<DutchAuctionProps> = ({
@@ -25,6 +26,7 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
 }) => {
     const { forSale, price } = contractState
     const [num, setNum] = useState(trySelectSale(contractState))
+    const [result, setResult] = useState<Result>()
 
     const onSelectNum = (selection: string) => setNum(selection)
     const handleMint = async (evt: any) => {
@@ -34,7 +36,7 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
 
             let exists = false
             for (var i = 0; i < forSale.length; i++) {
-                if (forSale[i].number.eq(selectedNum)) {
+                if (forSale[i].eq(selectedNum)) {
                     exists = true
                     break
                 }
@@ -50,8 +52,15 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             })
 
             console.log('mint result:', res)
+            setResult({
+                message: `Mint Transaction Sent, Tx Hash: ${res.hash}`,
+            })
         } catch (e) {
             console.log(`tx response: ${e}`)
+            setResult({
+                message: `Mint Transaction Error: ${(e as Error).toString()}`,
+                err: e as Error,
+            })
         }
     }
 
@@ -63,8 +72,15 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             })
 
             console.log('mint all result:', res)
+            setResult({
+                message: `Mint All Sent, Tx Hash: ${res.hash}`,
+            })
         } catch (e) {
             console.log(`tx response: ${e}`)
+            setResult({
+                message: `Mint All Error: ${(e as Error).toString()}`,
+                err: e as Error,
+            })
         }
     }
 
@@ -75,30 +91,29 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
         <div>
             <AuctionItem contractState={contractState} onSelect={onSelectNum} />
 
-            <form onSubmit={handleMint}>
-                <Field>Mint Number:</Field>
-                <LongInput
-                    type="text"
-                    value={num}
-                    onChange={(e) => setNum(e.target.value)}
-                />
-                <Selection>
-                    <Submit value="Mint" />
-                </Selection>
-                <Selection>
-                    <Button onClick={handleMintAll}>Mint All</Button>
-                </Selection>
-            </form>
+            {account && (
+                <form onSubmit={handleMint}>
+                    <Field>Mint Number:</Field>
+                    <LongInput
+                        type="text"
+                        value={num}
+                        onChange={(e) => setNum(e.target.value)}
+                    />
+                    <Selection>
+                        <Submit value="Mint" />
+                    </Selection>
+                    <Selection>
+                        <Button onClick={handleMintAll}>Mint All</Button>
+                    </Selection>
+                </form>
+            )}
+            {result && <Status isError={result.err}>{result.message}</Status>}
         </div>
     )
 }
 
 function trySelectSale({ forSale }: ContractState): string | undefined {
-    for (var i = 0; i < forSale.length; i++) {
-        const item = forSale[i]
-        if (item.isAvailable) return item.number.toString()
-    }
-    return
+    return forSale[0] ? forSale[0].toString() : undefined
 }
 
 export default DutchAuction

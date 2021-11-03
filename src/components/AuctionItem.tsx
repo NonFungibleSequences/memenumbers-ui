@@ -53,16 +53,10 @@ const AuctionItem: React.FC<DutchAuctionProps> = ({
     const minutesLeft = Math.max(0, endTime.diff(moment(), 'minute'))
 
     const batch = forSale.map((x) => {
-        const num = x.number.toString()
+        const num = x.toString()
         return (
             <React.Fragment key={`auctionItem${num}`}>
-                <span
-                    onClick={() => {
-                        if (x.isAvailable) onSelect(num)
-                    }}
-                >
-                    {x.isAvailable ? <Num>{num}</Num> : <DelNum>{num}</DelNum>}
-                </span>{' '}
+                <Num onClick={() => onSelect(num)}>{num}</Num>{' '}
             </React.Fragment>
         )
     })

@@ -259,13 +259,13 @@ const Faq: Page = () => {
 
                 <h3>Why are you using an auction and not a bonding curve?</h3>
                 <p>
-                    We’re using a Dutch auction process to maximize fair
+                    We&apos;re using a Dutch auction process to maximize fair
                     distribution and minimize the gas wars. The Dutch auction is
                     essential for the premise of releasing sequence batches,
                     otherwise there will just be a dumb land grab if we let
                     people mint however many numbers they want as long as
-                    they're first and pay highest gas. That’s not fair. And it
-                    subtracts 90% of the fun.
+                    they&apos;re first and pay highest gas. That&apos;s not
+                    fair. And it subtracts 90% of the fun.
                 </p>
 
                 <h3>Why is there no artwork with the NFT?</h3>

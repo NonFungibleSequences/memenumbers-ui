@@ -4,7 +4,8 @@ import Link from 'next/link'
 import styled from 'styled-components'
 
 import Web3Connect from './Web3Connect'
-import config, { MAINNET } from '../config'
+import config, { MAINNET, RINKEBY } from '../config'
+import useContract from '../hooks/useContract'
 
 const Container = styled.div`
     display: flex;
@@ -23,7 +24,7 @@ const Navigation = styled(Container)`
 `
 
 const Footer = styled(Navigation)`
-    justify-content: flex-center;
+    justify-content: flex-end;
 `
 
 const NavItem = styled.a`
@@ -38,7 +39,7 @@ const NavItem = styled.a`
 
 const FooterNavItem = styled(NavItem)`
     border: 0;
-    // font-size: 12px;
+    font-size: 16px;
     margin-bottom: 0;
     padding: 10;
 `
@@ -65,26 +66,42 @@ const Logo = styled.img`
     height: 85px;
 `
 
+//#HACK for ghpages, we need to rewrite asset paths
 const Layout: React.FC = ({ children }) => {
+    // const { basePath } = useRouter()
+    const [{ chainId }, ,] = useContract()
+    const openSeaLink =
+        chainId === RINKEBY
+            ? 'https://testnets.opensea.io/collection/memenumbers-v3'
+            : 'https://opensea.io/collection/memenumbers'
+
+    const contractLink =
+        chainId === RINKEBY
+            ? `https://rinkeby.etherscan.io/address/${
+                  config(RINKEBY).contractAddress
+              }`
+            : `https://etherscan.io/address/${
+                  config(MAINNET).contractAddress
+              }#code`
+
     return (
         <>
             <Navigation>
                 <Link href="/" passHref>
                     <a>
-                        <Logo alt="MemeNumbers" src="/assets/logo.png" />
+                        <Logo alt="MemeNumbers" src={'/assets/logo.png'} />
                     </a>
                 </Link>
 
                 <CenterNav>
-                    <Link
-                        href="https://opensea.io/collection/memenumbers"
-                        passHref
-                    >
-                        <NavItem>OpenSea</NavItem>
+                    <Link href={openSeaLink} passHref>
+                        <NavItem target="_blank" rel="noopener noreferrer">
+                            OpenSea
+                        </NavItem>
                     </Link>
-                    <Link href="/faq" passHref>
-                        <NavItem>FAQ</NavItem>
-                    </Link>
+                    {/* <Link href="/faq" passHref> */}
+                    {/*     <NavItem>FAQ</NavItem> */}
+                    {/* </Link> */}
                 </CenterNav>
 
                 <RightNav>
@@ -104,9 +121,7 @@ const Layout: React.FC = ({ children }) => {
                 </FooterNavItem>
 
                 <FooterNavItem
-                    href={`https://etherscan.io/address/${
-                        config(MAINNET).contractAddress
-                    }#code`}
+                    href={contractLink}
                     target="_blank"
                     rel="noopener noreferrer"
                 >

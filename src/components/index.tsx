@@ -97,3 +97,7 @@ export const Button = styled.button`
 export const LongInput = styled(Input)`
     width: 35%;
 `
+
+export const Status = styled.div<{ isError: Error | undefined }>`
+    color: ${(props) => (props.isError ? '#d30000' : 'green')};
+`

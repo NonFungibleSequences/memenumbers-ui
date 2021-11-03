@@ -2,7 +2,7 @@ import type { Page } from '../src/types/PageComponent'
 
 import styled from 'styled-components'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 
 import { useWeb3React } from '@web3-react/core'
 
@@ -14,12 +14,11 @@ import Operations from '../src/components/Operations'
 import useContract, { State as ContractState } from '../src/hooks/useContract'
 
 const Home: Page = () => {
-    const { basePath } = useRouter()
+    // const { basePath } = useRouter()
     const { account } = useWeb3React()
-    const [{ state, contract }, _, contractState] = useContract()
+    const [{ contract }, _, contractState] = useContract()
 
-    const auctionReady =
-        state === ContractState.Ready && contractState && account && contract
+    const viewReady = contractState && contract
 
     // #FIXME the basepath for the favicon is a hack for ghpages because it is hosted at a
     // specific project path.  Should probably be removed later
@@ -27,25 +26,14 @@ const Home: Page = () => {
         <div>
             <Head>
                 <title>MemeNumbers</title>
-                <meta name="description" content="eth" />
-                <link
-                    rel="icon"
-                    href={
-                        basePath?.charAt(0) === '/'
-                            ? `${basePath}/favicon.ico`
-                            : '/favicon.ico'
-                    }
-                />
+                <meta name="description" content="MemeNumbers" />
+                <link rel="icon" href={'/favicon.ico'} />
             </Head>
 
-            {/* <Main> */}
-            {/*     <Web2 /> */}
-            {/* </Main> */}
-
             <Main>
-                {!auctionReady && <Web2 />}
+                {!viewReady && <Web2 />}
 
-                {auctionReady && (
+                {viewReady && (
                     <div>
                         <Segment />
                         <DutchAuction
@@ -55,10 +43,10 @@ const Home: Page = () => {
                         />
 
                         <Segment />
-                        {contract && <OwnerCheck contract={contract} />}
+                        <OwnerCheck account={account} contract={contract} />
 
                         <Segment />
-                        {contract && account && (
+                        {account && (
                             <Operations account={account} contract={contract} />
                         )}
                     </div>
