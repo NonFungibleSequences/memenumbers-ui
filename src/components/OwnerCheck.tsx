@@ -1,12 +1,10 @@
 import { useState } from 'react'
-
-import { Contract } from '@ethersproject/contracts'
-import { BigNumber } from '@ethersproject/bignumber'
+import { ethers, BigNumber } from 'ethers'
 
 import { Submit, LongInput, Field } from '../components'
 
 interface OwnerCheckProps {
-    contract: Contract
+    contract: ethers.Contract
     account?: string | null
 }
 

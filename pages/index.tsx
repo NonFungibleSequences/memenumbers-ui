@@ -4,21 +4,23 @@ import styled from 'styled-components'
 import Head from 'next/head'
 // import { useRouter } from 'next/router'
 
-import { useWeb3React } from '@web3-react/core'
+// import { useWeb3React } from '@web3-react/core'
 
 import Layout from '../src/components/Layout'
 import OwnerCheck from '../src/components/OwnerCheck'
 import DutchAuction from '../src/components/DutchAuction'
 import Operations from '../src/components/Operations'
 
-import useContract, { State as ContractState } from '../src/hooks/useContract'
+// import useContract, { State as ContractState } from '../src/hooks/useContract'
+
+import useWeb3 from '../src/hooks/useWeb3'
 
 const Home: Page = () => {
     // const { basePath } = useRouter()
-    const { account } = useWeb3React()
-    const [{ contract }, _, contractState] = useContract()
+    // const { account } = useWeb3React()
+    // const [{ contract }, _, contractState] = useContract()
 
-    const viewReady = contractState && contract
+    const [{ address, contractState, contract }, actions] = useWeb3()
 
     // #FIXME the basepath for the favicon is a hack for ghpages because it is hosted at a
     // specific project path.  Should probably be removed later
@@ -31,23 +33,23 @@ const Home: Page = () => {
             </Head>
 
             <Main>
-                {!viewReady && <Web2 />}
+                {/* <Web2 /> */}
 
-                {viewReady && (
+                {contractState && contract && (
                     <div>
                         <Segment />
                         <DutchAuction
                             contractState={contractState}
                             contract={contract}
-                            account={account}
+                            account={address}
                         />
 
                         <Segment />
-                        <OwnerCheck account={account} contract={contract} />
+                        <OwnerCheck account={address} contract={contract} />
 
                         <Segment />
-                        {account && (
-                            <Operations account={account} contract={contract} />
+                        {address && (
+                            <Operations account={address} contract={contract} />
                         )}
                     </div>
                 )}
@@ -55,6 +57,9 @@ const Home: Page = () => {
         </div>
     )
 }
+
+/*
+ */
 
 Home.layout = Layout
 

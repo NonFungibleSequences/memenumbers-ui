@@ -1,14 +1,13 @@
 import { useState, useCallback } from 'react'
 import _, { debounce } from 'lodash'
 
-import { Contract } from '@ethersproject/contracts'
-import { BigNumber } from '@ethersproject/bignumber'
+import { ethers, BigNumber } from 'ethers'
 
 import { Status, Button, Select, Submit, LongInput, Field } from '../components'
 import { Result } from '../types'
 
 interface Props {
-    contract: Contract
+    contract: ethers.Contract
     account: string
 }
 
@@ -130,7 +129,7 @@ const Operations: React.FC<Props> = ({ account, contract }) => {
 }
 
 async function confirmOwnership(
-    contract: Contract,
+    contract: ethers.Contract,
     account: string,
     num1: BigNumber,
     num2: BigNumber

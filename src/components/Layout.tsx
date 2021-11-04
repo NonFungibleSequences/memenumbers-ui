@@ -4,8 +4,8 @@ import Link from 'next/link'
 import styled from 'styled-components'
 
 import Web3Connect from './Web3Connect'
+import useWeb3 from '../hooks/useWeb3'
 import config, { MAINNET, RINKEBY } from '../config'
-import useContract from '../hooks/useContract'
 
 const Container = styled.div`
     display: flex;
@@ -69,14 +69,14 @@ const Logo = styled.img`
 //#HACK for ghpages, we need to rewrite asset paths
 const Layout: React.FC = ({ children }) => {
     // const { basePath } = useRouter()
-    const [{ chainId }, ,] = useContract()
+    const [{ network }, ,] = useWeb3()
     const openSeaLink =
-        chainId === RINKEBY
+        network === RINKEBY
             ? 'https://testnets.opensea.io/collection/memenumbers-v3'
             : 'https://opensea.io/collection/memenumbers'
 
     const contractLink =
-        chainId === RINKEBY
+        network === RINKEBY
             ? `https://rinkeby.etherscan.io/address/${
                   config(RINKEBY).contractAddress
               }`

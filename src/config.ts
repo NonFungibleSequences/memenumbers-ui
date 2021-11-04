@@ -53,6 +53,6 @@ export default function Configure(chainId: number): Config {
         case GETH_DEV:
             return config.gethDev
         default:
-            throw new Error(`unsupported chain id: ${chainId}`)
+            return config.mainnet
     }
 }

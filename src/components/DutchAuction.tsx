@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import styled from 'styled-components'
-import { Contract } from '@ethersproject/contracts'
-import { BigNumber } from '@ethersproject/bignumber'
+import { ethers, BigNumber } from 'ethers'
 
 import { ContractState } from '../utils/contract'
 import AuctionItem from './AuctionItem'
@@ -14,7 +13,7 @@ const Selection = styled.div`
 `
 
 interface DutchAuctionProps {
-    contract: Contract
+    contract: ethers.Contract
     contractState: ContractState
     account?: string | null
 }

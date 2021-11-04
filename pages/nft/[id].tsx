@@ -8,8 +8,6 @@ import { Spinner } from '../../src/components/Spinner'
 import AssetRenderer from '../../src/components/AssetRendererV1'
 import { decodeRendererV1, AssetMetadata } from '../../src/utils/decoding'
 
-import useContract from '../../src/hooks/useContract'
-
 const Nft: React.FC = () => {
     const [asset, setAsset] = useState<AssetMetadata | null>()
     // const { contract } = useContract()

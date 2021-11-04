@@ -1,5 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
+import { ethers, BigNumber } from 'ethers'
 
 export interface ContractState {
     auctionStarted: BigNumber
@@ -8,10 +7,9 @@ export interface ContractState {
 }
 
 export async function getContractState(
-    contract: Contract
+    contract: ethers.Contract
 ): Promise<ContractState> {
     console.log('querying contract...')
-    //#FIXME auctionStarted and getForSale doesn't need to be loaded all the time
     const [auctionStarted, price, forSale] = await Promise.all([
         contract.auctionStarted(),
         contract.currentPrice(),
@@ -23,4 +21,13 @@ export async function getContractState(
         price,
         forSale,
     }
+}
+
+export async function updatePrice(
+    contract: ethers.Contract
+): Promise<[BigNumber, BigNumber]> {
+    return await Promise.all([
+        contract.auctionStarted(),
+        contract.currentPrice(),
+    ])
 }

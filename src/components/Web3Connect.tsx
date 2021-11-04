@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import useContract, { State as ContractState } from '../hooks/useContract'
+import useWeb3 from '../hooks/useWeb3'
 import { Button } from './'
 import { RINKEBY } from '../config'
 
@@ -10,28 +10,33 @@ const P = styled.p`
 `
 
 const Web3Connect: React.FC = () => {
-    const [{ state, account, chainId }, { activate }] = useContract()
+    const [{ address, network, onboard }, { ready, disconnect }] = useWeb3()
 
-    const ready = state === ContractState.Ready
-    const activating = state === ContractState.ActivatingConnector
-    const buttonContent = ready
-        ? shorten(account)
-        : activating
-        ? 'Connecting'
-        : 'Connect Wallet'
+    const buttonContent = address ? shorten(address) : 'Connect Wallet'
+    // ? 'Connecting'
+    // : 'Connect Wallet'
 
     return (
         <>
-            {chainId && chainId === RINKEBY ? <P>(Rinkeby)</P> : null}
+            {network && network === RINKEBY ? <P>(Rinkeby)</P> : null}
 
             <Button
-                disabled={ready || activating}
+                disabled={!!address}
                 key="connect"
-                onClick={() => {
-                    activate()
+                onClick={async () => {
+                    await onboard?.walletSelect()
+                    await onboard?.walletCheck()
                 }}
             >
                 {buttonContent}
+            </Button>
+            <Button
+                key="disconnect"
+                onClick={async () => {
+                    onboard?.walletReset()
+                }}
+            >
+                Disconnect
             </Button>
         </>
     )
