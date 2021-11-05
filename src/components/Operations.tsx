@@ -5,6 +5,7 @@ import { ethers, BigNumber } from 'ethers'
 
 import { Status, Button, Select, Submit, LongInput, Field } from '../components'
 import { Result } from '../types'
+import { addressEquals } from '../utils'
 
 interface Props {
     account?: string
@@ -143,13 +144,12 @@ async function confirmOwnership(
     num1: BigNumber,
     num2: BigNumber
 ): Promise<boolean> {
-    const checkNum1 = contract.ownerOf(num1)
-    const checkNum2 = contract.ownerOf(num2)
     try {
+        const checkNum1 = contract.ownerOf(num1)
+        const checkNum2 = contract.ownerOf(num2)
         let results = await Promise.all([checkNum1, checkNum2])
         for (var i = 0; i < results.length; i++) {
-            console.log('WTF?????', results[i], account)
-            if (results[i] != account) return false
+            if (!addressEquals(results[i], account)) return false
         }
         return true
     } catch (e) {

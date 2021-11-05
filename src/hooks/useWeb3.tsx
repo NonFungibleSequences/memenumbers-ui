@@ -1,4 +1,11 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, {
+    useEffect,
+    useContext,
+    useState,
+    useRef,
+    Dispatch,
+    SetStateAction,
+} from 'react'
 import { ethers, providers } from 'ethers'
 import { API, Wallet, Ens } from 'bnc-onboard/dist/src/interfaces'
 
@@ -52,6 +59,14 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
     const [contractState, setContractState] = useState<ContractState>()
     const [activeContract, setActiveContract] = useState<ethers.Contract>()
 
+    //callback anchors
+    const contractStateRef = useRef<ContractState>()
+    contractStateRef.current = contractState
+
+    const getCurrentState = () => {
+        return contractStateRef.current
+    }
+
     useEffect(() => {
         const onboard = initOnboard({
             address: setAddress,
@@ -78,31 +93,15 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
         setOnboard(onboard)
 
         // Get contract data and setup listeners on default contract
-        ;(async () => {
-            const contractState = await getContractState(defaultContract)
-            defaultContract.on('Refresh', async () => {
-                let currentState = await getContractState(defaultContract)
-                setContractState(currentState)
-            })
-            setContractState(contractState)
-        })()
+        subscribeRefresh(defaultContract, setContractState)
 
         // Setup price refresh on defaultProvider
-        defaultProvider.on('block', async (_block) => {
-            try {
-                // console.log(`mainnet - ${block}!`)
-                const [auctionStarted, price] = await updatePrice(
-                    defaultContract
-                )
-                if (contractState && contractState.price > price)
-                    console.log('NEW BATCH, SHOULD FORCE RELOAD')
-                setContractState((prev: ContractState | undefined) => {
-                    return prev ? { ...prev, auctionStarted, price } : prev
-                })
-            } catch (e) {
-                console.error(`contract error: ${e}`)
-            }
-        })
+        subscribeState(
+            defaultProvider,
+            defaultContract,
+            getCurrentState,
+            setContractState
+        )
     }, [])
 
     useEffect(() => {
@@ -132,28 +131,16 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
                 defaultProvider
             )
 
-            //get contract data and set listener
-            const contractState = await getContractState(defaultContract)
-            defaultContract.on('Refresh', async () => {
-                let currentState = await getContractState(defaultContract)
-                setContractState(currentState)
-            })
-            setContractState(contractState)
+            // Get contract data and setup listeners on default contract
+            subscribeRefresh(defaultContract, setContractState)
 
             // Setup price refresh on defaultProvider
-            defaultProvider.on('block', async (_block) => {
-                // console.log(`${network} - ${block}!`)
-                try {
-                    const [auctionStarted, price] = await updatePrice(
-                        defaultContract
-                    )
-                    setContractState((prev: ContractState | undefined) => {
-                        return prev ? { ...prev, auctionStarted, price } : prev
-                    })
-                } catch (e) {
-                    console.log('CONTRACT ERROR')
-                }
-            })
+            subscribeState(
+                defaultProvider,
+                defaultContract,
+                getCurrentState,
+                setContractState
+            )
 
             if (wallet) {
                 let p: providers.JsonRpcProvider = new ethers.providers.Web3Provider(
@@ -219,6 +206,53 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
             {children}
         </Web3Context.Provider>
     )
+}
+
+async function subscribeRefresh(
+    contract: ethers.Contract,
+    setContractState: Dispatch<SetStateAction<ContractState | undefined>>
+) {
+    const contractState = await getContractState(defaultContract)
+    contract.on('Refresh', async () => {
+        let currentState = await getContractState(defaultContract)
+        setContractState(currentState)
+    })
+    setContractState(contractState)
+}
+
+function subscribeState(
+    provider: providers.JsonRpcProvider,
+    contract: ethers.Contract,
+    getCurrentState: () => ContractState | undefined,
+    setContractState: Dispatch<SetStateAction<ContractState | undefined>>
+) {
+    provider.on('block', async (_block) => {
+        try {
+            // console.log(`mainnet - ${block}!`)
+            const currentState = getCurrentState()
+            const price = await contract.currentPrice()
+
+            console.log(
+                `current price ${currentState?.price}, new price ${price}`
+            )
+
+            //#HACK, in case refresh event comes later than the last auto refresh from block updates
+            //we should force update the forsale and auctionstarted (a full requery)
+            if (currentState && currentState.price < price) {
+                const [auctionStarted, forSale] = await Promise.all([
+                    contract.auctionStarted(),
+                    contract.getForSale(),
+                ])
+                setContractState({ auctionStarted, forSale, price })
+            } else {
+                setContractState((prev: ContractState | undefined) => {
+                    return prev ? { ...prev, price } : prev
+                })
+            }
+        } catch (e) {
+            console.error(`contract error: ${e}`)
+        }
+    })
 }
 
 export default function useWeb3() {
