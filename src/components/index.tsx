@@ -1,5 +1,17 @@
 import styled, { css } from 'styled-components'
 
+export const PangolinFont = css`
+    color: rgba(255, 255, 255, 1);
+    font-family: Pangolin;
+    font-weight: Regular;
+`
+
+export const FrederickaFont = css`
+    color: rgba(255, 255, 255, 1);
+    font-family: Fredericka the Great;
+    font-weight: Regular;
+`
+
 export const DefaultFont = css`
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
@@ -8,21 +20,20 @@ export const DefaultFont = css`
 
 export const DefaultFontSpan = styled.span`
     ${DefaultFont}
+    color: rgba(255, 255, 255, 1);
 `
+
 export const EtherSymbol = () => <DefaultFontSpan>Ξ</DefaultFontSpan>
 
 export const Field = styled.p`
-    color: rgba(255, 255, 255, 1);
-    font-family: Pangolin;
-    font-weight: Regular;
+    ${PangolinFont}
     font-size: 20px;
     opacity: 1;
 `
 
 export const Value = styled.p`
+    ${PangolinFont}
     color: rgba(166, 250, 255, 1);
-    font-family: Pangolin;
-    font-weight: Regular;
     font-size: 26px;
     opacity: 1;
 `
@@ -35,21 +46,20 @@ export const FieldSet = styled.fieldset`
 `
 
 export const Input = styled.input`
+    ${PangolinFont}
     font-size: inherit;
-    font-family: Pangolin;
-    font-weight: Regular;
     padding: 0.3em 0.4em;
     margin: 0.1em 0.2em;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
 
-    color: rgba(255, 255, 255, 1);
     background: rgba(51, 51, 51, 1);
     border: 2px solid rgba(255, 255, 255, 1);
 `
 
 export const Select = styled.select`
+    ${FrederickaFont}
     color: rgba(51, 51, 51, 1);
     background: rgba(255, 255, 255, 1);
     border-radius: 2px;
@@ -62,6 +72,10 @@ export const Select = styled.select`
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 
+    height: 2.1rem;
+    min-width: 6em;
+    margin: 2px;
+
     &:active {
         background-color: #f1ac15;
     }
@@ -70,6 +84,7 @@ export const Select = styled.select`
 export const Submit = styled.input.attrs({
     type: 'submit',
 })`
+    ${FrederickaFont}
     color: rgba(51, 51, 51, 1);
     background: rgba(255, 255, 255, 1);
     border-radius: 2px;
@@ -77,6 +92,10 @@ export const Submit = styled.input.attrs({
     outline: none;
     transition: 0.15s;
     text-align: center;
+
+    height: 2.1rem;
+    min-width: 6em;
+    margin: 2px;
 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -88,6 +107,7 @@ export const Submit = styled.input.attrs({
 `
 
 export const Button = styled.button`
+    ${FrederickaFont}
     color: rgba(51, 51, 51, 1);
     background: rgba(255, 255, 255, 1);
     border-radius: 2px;
@@ -95,6 +115,10 @@ export const Button = styled.button`
     outline: none;
     transition: 0.15s;
     text-align: center;
+
+    height: 2.1rem;
+    min-width: 6em;
+    margin: 2px;
 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

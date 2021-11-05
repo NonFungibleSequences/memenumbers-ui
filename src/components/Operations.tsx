@@ -62,6 +62,7 @@ const Operations: React.FC<Props> = ({
                 firstNum,
                 secondNum
             )
+            // FIXME: We should not require ownership here just to try numbers. Perhaps we should just print a warning if you're not the owner and the next txn will fail.
             if (isOwner) {
                 let res = await contract.operate(firstNum, op, secondNum)
                 setState({

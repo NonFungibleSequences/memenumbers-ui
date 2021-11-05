@@ -4,15 +4,10 @@ import styled from 'styled-components'
 import Head from 'next/head'
 // import { useRouter } from 'next/router'
 
-// import { useWeb3React } from '@web3-react/core'
-
 import Layout from '../src/components/Layout'
 import OwnerCheck from '../src/components/OwnerCheck'
 import DutchAuction from '../src/components/DutchAuction'
 import Operations from '../src/components/Operations'
-
-// import useContract, { State as ContractState } from '../src/hooks/useContract'
-
 import useWeb3 from '../src/hooks/useWeb3'
 
 const Home: Page = () => {
@@ -77,9 +72,9 @@ const Segment = styled.div`
     width: 100%;
     height: 3px;
     background: rgba(196, 196, 196, 1);
-    opacity: 1;
-    // position: absolute;
+    opacity: 0.1;
     overflow: hidden;
+    margin: 2em auto;
 `
 
 // sad

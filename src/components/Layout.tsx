@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import Web3Connect from './Web3Connect'
 import useWeb3 from '../hooks/useWeb3'
 import config, { MAINNET, RINKEBY } from '../config'
+import { FrederickaFont } from '../components'
 
 const Container = styled.div`
     display: flex;
@@ -17,6 +18,8 @@ const Container = styled.div`
 `
 
 const Navigation = styled(Container)`
+    ${FrederickaFont}
+
     align-items: center;
     justify-content: space-between;
     padding: 10px;
@@ -28,6 +31,8 @@ const Footer = styled(Navigation)`
 `
 
 const NavItem = styled.a`
+    color: rgba(255, 255, 255, 1);
+
     font-size: 20px;
     // margin: 0 15px 20px 0;
     padding: 10px;
@@ -147,6 +152,5 @@ const Layout: React.FC = ({ children }) => {
         </>
     )
 }
-//FIXME contract address doesn't change with network, always points to mainnet
 
 export default Layout
