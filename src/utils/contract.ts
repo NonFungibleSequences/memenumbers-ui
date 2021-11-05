@@ -1,37 +1,33 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
+import { ethers, BigNumber } from 'ethers'
 
 export interface ContractState {
     auctionStarted: BigNumber
     price: BigNumber
-    forSale: Item[]
-}
-
-interface Item {
-    number: BigNumber
-    isAvailable: boolean
+    forSale: BigNumber[]
 }
 
 export async function getContractState(
-    contract: Contract
+    contract: ethers.Contract
 ): Promise<ContractState> {
-    //#TODO call this in parallel
-    console.log('querying state...')
-    //#FIXME auctionStarted and getForSale doesn't need to be loaded all the time
-    const auctionStarted = await contract.auctionStarted()
-    const price = await contract.currentPrice()
-    const sale = await contract.getForSale()
-
-    const forSale: Item[] = []
-    for (var i = 0; i < sale.length; i++) {
-        const number = sale[i]
-        const isAvailable = await contract.isForSale(number)
-        forSale.push({ number, isAvailable })
-    }
+    // console.log('querying contract...')
+    const [auctionStarted, price, forSale] = await Promise.all([
+        contract.auctionStarted(),
+        contract.currentPrice(),
+        contract.getForSale(),
+    ])
 
     return {
         auctionStarted,
         price,
         forSale,
     }
+}
+
+export async function updatePrice(
+    contract: ethers.Contract
+): Promise<[BigNumber, BigNumber]> {
+    return await Promise.all([
+        contract.auctionStarted(),
+        contract.currentPrice(),
+    ])
 }

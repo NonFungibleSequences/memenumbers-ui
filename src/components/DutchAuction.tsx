@@ -1,57 +1,98 @@
 import { useState } from 'react'
-import { Contract } from '@ethersproject/contracts'
-import { BigNumber } from '@ethersproject/bignumber'
-import { formatEther, parseUnits } from '@ethersproject/units'
+import styled from 'styled-components'
+import { ethers, BigNumber } from 'ethers'
 
 import { ContractState } from '../utils/contract'
 import AuctionItem from './AuctionItem'
-import { FieldSet, Field, LongInput, Submit, Button } from '../components'
+import { Status, Field, LongInput, Submit, Button } from '../components'
+import { Result } from '../types'
+
+const Selection = styled.div`
+    display: inline-block;
+    padding-right: 10px;
+`
 
 interface DutchAuctionProps {
-    contract: Contract
+    account?: string | null
+    contract?: ethers.Contract
     contractState: ContractState
-    account: string
+    readyToTransact: () => Promise<boolean>
 }
 
 const DutchAuction: React.FC<DutchAuctionProps> = ({
     contract,
     contractState,
     account,
+    readyToTransact,
 }) => {
     const { forSale, price } = contractState
     const [num, setNum] = useState(trySelectSale(contractState))
+    const [result, setResult] = useState<Result>()
 
     const onSelectNum = (selection: string) => setNum(selection)
     const handleMint = async (evt: any) => {
         evt.preventDefault()
+        let ready = await readyToTransact()
+        if (!ready || !contract) return
+
         try {
             let selectedNum = BigNumber.from(num)
 
             let exists = false
             for (var i = 0; i < forSale.length; i++) {
-                if (forSale[i].number.eq(selectedNum)) {
+                if (forSale[i].eq(selectedNum)) {
                     exists = true
                     break
                 }
             }
 
             if (!exists) {
-                alert('nope')
+                setResult({
+                    message: `MemeNumber is not part of the current batch: ${selectedNum}`,
+                    err: new Error('invalid memenumber'),
+                })
                 return
             }
+            console.log(contract)
 
-            let res = await contract.mint(account, selectedNum, {
+            let res = await contract!.mint(account, selectedNum, {
                 value: price,
             })
 
             console.log('mint result:', res)
-        } catch (e) {
-            console.log(`tx response: ${e}`)
+            setResult({
+                message: `Mint Transaction Sent, Tx Hash: ${res.hash}`,
+            })
+        } catch (e: any) {
+            console.log(`tx response: ${e.message}`)
+            setResult({
+                message: `Mint Transaction Error: ${e.message}`,
+                err: e as Error,
+            })
         }
     }
 
     const handleMintAll = async (evt: any) => {
         evt.preventDefault()
+        let ready = await readyToTransact()
+        if (!ready || !contract) return
+
+        try {
+            let res = await contract!.mintAll(account, {
+                value: price,
+            })
+
+            console.log('mint all result:', res)
+            setResult({
+                message: `Mint All Sent, Tx Hash: ${res.hash}`,
+            })
+        } catch (e: any) {
+            console.log(`tx response: ${e.message}`)
+            setResult({
+                message: `Mint All Error: ${e.message}`,
+                err: e as Error,
+            })
+        }
     }
 
     // #FIXME
@@ -62,27 +103,26 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             <AuctionItem contractState={contractState} onSelect={onSelectNum} />
 
             <form onSubmit={handleMint}>
-                <FieldSet>
-                    <Field>Mint Number:</Field>
-                    <LongInput
-                        type="text"
-                        value={num}
-                        onChange={(e) => setNum(e.target.value)}
-                    />
+                <Field>Mint Number:</Field>
+                <LongInput
+                    type="text"
+                    value={num}
+                    onChange={(e) => setNum(e.target.value)}
+                />
+                <Selection>
                     <Submit value="Mint" />
+                </Selection>
+                <Selection>
                     <Button onClick={handleMintAll}>Mint All</Button>
-                </FieldSet>
+                </Selection>
             </form>
+            {result && <Status isError={result.err}>{result.message}</Status>}
         </div>
     )
 }
 
 function trySelectSale({ forSale }: ContractState): string | undefined {
-    for (var i = 0; i < forSale.length; i++) {
-        const item = forSale[i]
-        if (item.isAvailable) return item.number.toString()
-    }
-    return
+    return forSale[0] ? forSale[0].toString() : undefined
 }
 
 export default DutchAuction

@@ -1,68 +1,69 @@
 import type { Page } from '../src/types/PageComponent'
 
-import { useState, useEffect, ReactElement } from 'react'
 import styled from 'styled-components'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 
-import { useWeb3React } from '@web3-react/core'
+// import { useWeb3React } from '@web3-react/core'
 
 import Layout from '../src/components/Layout'
 import OwnerCheck from '../src/components/OwnerCheck'
 import DutchAuction from '../src/components/DutchAuction'
 import Operations from '../src/components/Operations'
 
-import useContract, { State as ContractState } from '../src/hooks/useContract'
+// import useContract, { State as ContractState } from '../src/hooks/useContract'
+
+import useWeb3 from '../src/hooks/useWeb3'
 
 const Home: Page = () => {
-    const { basePath } = useRouter()
-    const { account } = useWeb3React()
-    const [{ state, contract }, contractState] = useContract()
+    // const { basePath } = useRouter()
+    const [
+        { address, contractState, contract, defaultContract },
+        actions,
+    ] = useWeb3()
 
-    const auctionReady =
-        state === ContractState.Ready && contractState && account && contract
-
-    // #FIXME the basepath for the favicon is a hack for ghpages because it is hosted at a
-    // specific project path.  Should probably be removed later
     return (
         <div>
             <Head>
                 <title>MemeNumbers</title>
-                <meta name="description" content="eth" />
-                <link
-                    rel="icon"
-                    href={
-                        basePath?.charAt(0) === '/'
-                            ? `${basePath}/favicon.ico`
-                            : '/favicon.ico'
-                    }
-                />
+                <meta name="description" content="MemeNumbers" />
+                <link rel="icon" href={'/favicon.ico'} />
             </Head>
 
             <Main>
-                {!auctionReady && <Web2 />}
+                {/* <Web2 /> */}
 
-                {auctionReady && (
+                {contractState && (
                     <div>
+                        <Segment />
                         <DutchAuction
                             contractState={contractState}
                             contract={contract}
-                            account={account}
+                            account={address}
+                            readyToTransact={actions.ready}
                         />
 
                         <Segment />
-                        {contract && <OwnerCheck contract={contract} />}
+                        <OwnerCheck
+                            account={address}
+                            contract={defaultContract}
+                        />
 
                         <Segment />
-                        {contract && account && (
-                            <Operations account={account} contract={contract} />
-                        )}
+                        <Operations
+                            account={address}
+                            contract={contract}
+                            readyToTransact={actions.ready}
+                        />
                     </div>
                 )}
             </Main>
         </div>
     )
 }
+
+/*
+ */
 
 Home.layout = Layout
 

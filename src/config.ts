@@ -6,10 +6,10 @@ export const AMINO = 31337
 export const GETH_DEV = 1337
 export const supportedChains = [
     MAINNET,
-    ROPSTEN,
-    KOVAN,
+    // ROPSTEN,
+    // KOVAN,
     RINKEBY,
-    AMINO,
+    // AMINO,
     GETH_DEV,
 ]
 
@@ -19,7 +19,7 @@ type Config = {
 
 const config = {
     mainnet: {
-        contractAddress: undefined,
+        contractAddress: '0x98afe7a8d28bbc88dcf41f8e06d97c74958a47dc',
     },
     ropsten: {
         contractAddress: undefined,
@@ -28,7 +28,6 @@ const config = {
         contractAddress: undefined,
     },
     rinkeby: {
-        // contractAddress: '0xa373e957dc2c80ffddbedccd5a1eb652c5a74bca',
         contractAddress: '0xC628eCbAf90Ab0062516ca556c0DE9b382a67BbD',
     },
     amino: {
@@ -54,6 +53,6 @@ export default function Configure(chainId: number): Config {
         case GETH_DEV:
             return config.gethDev
         default:
-            throw new Error(`unsupported chain id: ${chainId}`)
+            return config.mainnet
     }
 }
