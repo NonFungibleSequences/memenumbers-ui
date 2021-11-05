@@ -1,12 +1,15 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export const DefaultText = styled.span`
+export const DefaultFont = css`
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol';
 `
 
-export const EtherSymbol = () => <DefaultText>Ξ</DefaultText>
+export const DefaultFontSpan = styled.span`
+    ${DefaultFont}
+`
+export const EtherSymbol = () => <DefaultFontSpan>Ξ</DefaultFontSpan>
 
 export const Field = styled.p`
     color: rgba(255, 255, 255, 1);

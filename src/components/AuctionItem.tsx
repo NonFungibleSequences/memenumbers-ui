@@ -70,7 +70,7 @@ const AuctionItem: React.FC<DutchAuctionProps> = ({
             <Set>
                 <Field>Price:</Field>
                 <Value>
-                    {formatEther(price)} <EtherSymbol />
+                    <EtherSymbol /> {formatEther(price)}
                 </Value>
             </Set>
 

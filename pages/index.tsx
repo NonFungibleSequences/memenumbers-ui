@@ -22,8 +22,6 @@ const Home: Page = () => {
         actions,
     ] = useWeb3()
 
-    // #FIXME the basepath for the favicon is a hack for ghpages because it is hosted at a
-    // specific project path.  Should probably be removed later
     return (
         <div>
             <Head>

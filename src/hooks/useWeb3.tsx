@@ -62,7 +62,6 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
     //callback anchors
     const contractStateRef = useRef<ContractState>()
     contractStateRef.current = contractState
-
     const getCurrentState = () => {
         return contractStateRef.current
     }

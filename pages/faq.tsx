@@ -1,135 +1,136 @@
 import React from 'react'
 import type { Page } from '../src/types/PageComponent'
+import Link from 'next/link'
+import styled from 'styled-components'
+
 import Layout from '../src/components/Layout'
+import { DefaultFont } from '../src/components'
+
+const Container = styled.div`
+    ${DefaultFont}// display: flex;
+    // flex-direction: row;
+
+    // @media (max-width: 768px) {
+    //     flex-direction: column;
+    // }
+`
+
+const Question = styled.h2`
+    color: rgba(166, 250, 255, 1);
+`
 
 const Faq: Page = () => {
     return (
-        <div>
+        <Container>
             <h1>Frequently Asked Questions</h1>
             <div>
-                <h2>Basics</h2>
-
-                <h3>What are MemeNumbers?</h3>
+                <Question>What is MemeNumbers?</Question>
                 <p>
-                    MemeNumbers (MN) is a project that creates random Numbers as
-                    NFTs on Ethereum. All Numbers are unique (there can be no
-                    duplicates) in our collection. The entire project is
-                    on-chain and relies on just the Ethereum chain.
+                    MemeNumbers is a game where wit and speed are the keys to
+                    owning a one-of-a-kind NFT.
                 </p>
                 <p>
-                    There are two parts to playing the MemeNumbers game. The
-                    first part is the minting contract we call the Number
-                    Generator where up to 8 random numbers can be minted.
+                    We generate up to eight random Numbers to be sold in Dutch
+                    auctions that last for one hour. Auction starts at Ξ5 (Eth)
+                    and ends at Ξ0.
                 </p>
                 <p>
-                    The second part is the Burn Operator contract. This contract
-                    allows any MemeNumber owner to take two Number NFTs and
-                    perform one operation to create a new Number. In other
-                    words, insert two NFTs, get one back. The new resulting
-                    Number is unique and a part of the MemeNumber set, meaning
-                    that if that Number already exists, then the minting
-                    contract cannot create that Number and no one else can use
-                    the operator contract to have that Number. It’s like a game
-                    of musical chairs.
+                    Anyone can get a Number, anyone can sell a Number. Selling
+                    Numbers are royalty FREE! (We don’t take a cut.) If you own
+                    two or more Numbers, you can do math with them to create a
+                    new Number!
                 </p>
-
-                <h3>How does it work?</h3>
+                <Question>Is this a NFT?</Question>
                 <p>
-                    Every one (1) hour, everyday, until the end of Ethereum, a
-                    set of numbers will be randomly generated and auctioned off
-                    from the remaining available number-space. We are using a
-                    Dutch auction mechanism to reduce the gas wars typically
-                    associated with a drop.
+                    Yes, MemeNumbers are standard ERC-721 on the Ethereum
+                    blockchain.
                 </p>
-
-                <h3>Why is this project important?</h3>
+                <Question>But where’s the art?</Question>
                 <p>
-                    Primitives are a very useful class of NFTs and contracts in
-                    the crypto world. They allow anyone to build derivatives
-                    without permission while inheriting the properties of the
-                    primitive. We believe that there are lots more primitives
-                    that can be built for Ethereum and it will enable more
-                    creativity with less complexity. If Money Legos exist, then
-                    it implies the existence of many other Legos. Meme Numbers
-                    are a class of number Legos.
-                </p>
-
-                <h3>Can I keep Operating numbers?</h3>
-                <p>
-                    Yes. All you need to do is pay for gas. We do not charge to
-                    burn Numbers. You can keep burning any two Numbers as long
-                    as the resulting number does not already exist. If the
-                    resulting number exists, the Burn Operator will not allow
-                    you to mint the burn. You will need both burner numbers in
-                    the same wallet. The newly minted number will be minted into
-                    the same wallet.
-                </p>
-
-                <h3>What is the cost of minting a number?</h3>
-                <p>
-                    The numbers are priced using a Dutch auction where the price
-                    is reduced over the 1 hour auction period. After an hour, if
-                    no one has won the auction, the price will fall to zero and
-                    stay there until someone mints for free. Just pay gas. By
-                    using the Dutch auction method, we hope to avoid the gas
-                    wars associated with many NFT projects.
-                </p>
-
-                <h3>How are the numbers chosen?</h3>
-                <p>
-                    The possible range of numbers are 1 through
-                    115792089237316195423570985008687907853269984665640564039457584007913129639936.
-                    That’s a lot of numbers. The numbers are randomly generated
-                    using the blockhash as the seed. Based on probability,
-                    numbers with a single digit are the rarest, followed by two
-                    digits, then three, and so on. We have excluded 0 since it
-                    breaks things and possibly creates a black hole if not used
-                    properly.
+                    MemeNumbers are not typical Jpegs. It’s in a class called
+                    “Primitives”, which can be used as building blocks to other
+                    NFTs and the Metaverse!
                 </p>
                 <p>
-                    The randomizer can be seen in the{' '}
+                    The art of MemeNumbers is not in its drawing. It’s in the
+                    project itself - the logic behind it, its attributes, its
+                    actual data on the blockchain; the sum of it all is
+                    considered the “art”.
+                </p>
+                <Question>How are the numbers chosen?</Question>
+                <p>
+                    The numbers are randomly generated using the blockhash as
+                    the seed. The possible range of numbers are 0 through
+                    Uint255. You can read the code for the number distribution
+                    algorithm on the{' '}
                     <a
-                        href="https://github.com/NonFungibleSequences/memenumbers-contract/blob/1342b64af6d72c0f5c4cf4b62cc57785c7d2c458/src/MemeNumbers.sol#L68"
+                        href="https://etherscan.io/address/0x98afe7a8d28bbc88dcf41f8e06d97c74958a47dc#code"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        contract
+                        contract.
                     </a>
-                    .
                 </p>
-
-                <h3>Why did you create this?</h3>
+                <Question>
+                    Can the number distribution algorithm be changed?
+                </Question>
                 <p>
-                    We are passionate about creating “primitives” for the
-                    Ethereum ecosystem. Primitives are basic building blocks of
-                    a metaverse that others can use to create a complex, and
-                    rich world. We set out to design:
+                    Nope. The number distribution algorithm is the heart and
+                    soul of MemeNumbers. We made it as immutable and transparent
+                    as possible. The algorithm is on chain and non-upgradeable.
                 </p>
-                <ol>
-                    <li>a 100% Ethereum-chain-only primitive that</li>
-                    <li>
-                        minimizes the chance of gas wars for fair distribution
-                        and
-                    </li>
-                    <li>
-                        allows for everyone to have fun and build on top for all
-                        eternity
-                    </li>
-                </ol>
+                <Question>When was MemeNumbers launched?</Question>
                 <p>
-                    We hope you enjoy our project. This is our love letter to
-                    Ethereum and this amazing community.
+                    We published the smart contract on{' '}
+                    <a
+                        href="https://etherscan.io/tx/0x354f2d41e0c6f8bd6f5cce131510393570c45b491b9bc29d2de44bf75b1257fd"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        October 30th, 2021
+                    </a>
                 </p>
-
-                <h2>The People and Community</h2>
-
-                <h3>Who are the people behind this project?</h3>
+                <Question>How long will MemeNumbers be up?</Question>
                 <p>
-                    The four people behind MemeNumbers are two developers, a
-                    community manager, and an operations person. We wanted to
-                    call this the Memenacci Project, but we could not get
-                    clarity on how to spell it, so we went with MemeNumbers
-                    instead.
+                    Forever! Everything is on-chain so as long as the Ethereum
+                    blockchain exists, MemeNumbers will exist.
+                </p>
+                <Question>OK, how do I get some MemeNumbers?</Question>
+                <p>
+                    You can get MemeNumbers in one of three ways. By winning at
+                    the <Link href="/">Dutch Auction</Link>, by buying off of{' '}
+                    <Link href="https://opensea.io/collection/memenumbers">
+                        OpenSea
+                    </Link>
+                    , and by doing math with two Numbers to create a new Number!
+                    The Dutch auction starts from Ξ5 (Eth), dropping down to
+                    Ξ0.0 linearly in one hour. When you mint, you pay the exact
+                    price at the time of minting. If no one mints after an hour
+                    then the price will sit at Ξ0 until someone mint (for
+                    free!). If you’d rather mint directly on the contract, you
+                    can{' '}
+                    <Link href="https://mirror.xyz/0x074b48C17119e61FCDf81D46fF6307F24BAC5D82/6_nFFFLb_PMtI88hOCyt5XxpuK_70mbkCCPxjz-BWDE">
+                        these instructions
+                    </Link>
+                    . To buy on OpenSea, just go to{' '}
+                    <Link href="https://opensea.io/collection/memenumbers">
+                        the collection
+                    </Link>{' '}
+                    To do math with your Numbers, go to{' '}
+                    <Link href="/">Dutch Auction</Link> and plug in your Numbers
+                    and choose the desired operator (“a” for addition, “s” for
+                    subtraction, “m” for multiplication, “d” for division.) The
+                    resulting Number will be minted into your wallet, while the
+                    two Numbers used for the operation will be burned. You can
+                    also do math directly on the{' '}
+                    <Link href="https://mirror.xyz/0x074b48C17119e61FCDf81D46fF6307F24BAC5D82/DKPcui-ri2s8tGKRyOVOMBXBtvwOJLMVTkyVff56zu8">
+                        contract
+                    </Link>
+                </p>
+                <Question>Who are you?</Question>
+                <p>
+                    The four creators of MemeNumbers are the developers, a
+                    community manager, and an operations person. They are:
                 </p>
                 <ul>
                     <li>
@@ -140,15 +141,28 @@ const Faq: Page = () => {
                         >
                             Huh.eth
                         </a>
-                    </li>
-                    <li>
-                        <a
-                            href="https://twitter.com/dt_mugen"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Denis(dt665m)
-                        </a>
+                        <p>
+                            Huh.eth has launched a few DAOs, including the
+                            NFT-focused collective{' '}
+                            <a
+                                href="https://twitter.com/crisisdao"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Crisis DAO
+                            </a>
+                            , and is a General Partner in a small crypto fund.
+                            He is an internet culture and meme pioneer from his
+                            days at{' '}
+                            <a
+                                href="https://en.wikipedia.org/wiki/Ben_Huh"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Cheezburger
+                            </a>
+                            , the purveyors of lolcats and fail memes.
+                        </p>
                     </li>
                     <li>
                         <a
@@ -158,6 +172,38 @@ const Faq: Page = () => {
                         >
                             Nicwn
                         </a>
+                        <p>
+                            Nick started out as a data guy at Microsoft & Yahoo!
+                            He had led the creation of LEGO Ideas. Left the tech
+                            scene after becoming a dad and worked in the
+                            education NGO sector. Since 2020, he has joined his
+                            friends in Crisis DAO and is on his way to losing
+                            all his moneys in Jpegs.
+                        </p>
+                    </li>
+                    <li>
+                        <a
+                            href="https://twitter.com/dt_mugen"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Denis
+                        </a>
+                        <p>
+                            Denis{' '}
+                            <a
+                                href="https://github.com/dt665m"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                (dt665m)
+                            </a>{' '}
+                            was an indie game developer who recently started
+                            focusing on the intersection between games and
+                            blockchains. He has been working on projects to make
+                            game assets into NFTs ever since the early days of
+                            Ethereum.
+                        </p>
                     </li>
                     <li>
                         <a
@@ -167,201 +213,30 @@ const Faq: Page = () => {
                         >
                             Shazow
                         </a>
+                        <p>
+                            Shazow was one of the two devs behind the{' '}
+                            <a
+                                href="https://thousandetherhomepage.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Thousand Ether Homepage
+                            </a>
+                            , which launched in 2017 prior to the ERC-721
+                            standard being adopted. It has since been wrapped
+                            and tradeable on{' '}
+                            <a
+                                href="https://opensea.io/collection/thousand-ether-homepage"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                OpenSea
+                            </a>
+                            .
+                        </p>
                     </li>
                 </ul>
-
-                <h3>What experience do you have creating crypto projects?</h3>
-                <p>
-                    Shazow was one of the two devs behind the{' '}
-                    <a
-                        href="https://thousandetherhomepage.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Thousand Ether Homepage
-                    </a>
-                    , which launched in 2017 prior to the ERC-721 standard being
-                    adopted. It has since been wrapped and tradeable on{' '}
-                    <a
-                        href="https://opensea.io/collection/thousand-ether-homepage"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        OpenSea
-                    </a>
-                    .
-                </p>
-                <p>
-                    Huh.eth has launched a few DAOs, including the NFT-focused
-                    collective{' '}
-                    <a
-                        href="https://twitter.com/crisisdao"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Crisis DAO
-                    </a>
-                    , and is a General Partner in a small crypto fund. He is an
-                    internet culture and meme pioneer from his days at{' '}
-                    <a
-                        href="https://en.wikipedia.org/wiki/Ben_Huh"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Cheezburger
-                    </a>
-                    , the purveyors of lolcats and fail memes.
-                </p>
-                <p>
-                    Nick started out as a data guy at Microsoft & Yahoo! He had
-                    led the creation of LEGO Ideas. Left the tech scene after
-                    becoming a dad and worked in the education NGO sector. Since
-                    2020, he has joined his friends in Crisis DAO and is on his
-                    way to losing all his moneys in Jpegs.
-                </p>
-                <p>
-                    Denis{' '}
-                    <a
-                        href="https://github.com/dt665m"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        (dt665m)
-                    </a>
-                    was an indie game developer who recently started focusing on
-                    the intersection between games and blockchains. He has been
-                    working on projects to make game assets into NFTs ever since
-                    the early days of Ethereum.
-                </p>
-
-                <h3>What’s the roadmap?</h3>
-                <p>
-                    Our roadmap adheres to the “primitive” philosophy: Bottom-up
-                    like the Loot Project, instead of top-down. Therefore,
-                    beyond this launch, we have not committed to any further
-                    development. We would love to and we have lots of ideas
-                    though, but we’re most looking forward to what others build.
-                    We want you to participate on the face value of this project
-                    so far.
-                </p>
-
-                <h2>Project Details</h2>
-
-                <h3>Is the contract audited or verified?</h3>
-                <p>
-                    The contracts are verified on Etherscan, but not audited. We
-                    provide no warranties or guarantees on these contracts.
-                    Please do your research before aping into any NFT project.
-                    Having said that, we strive to be fair, transparent, and
-                    only make promises we can keep. Please visit our Discord and
-                    ask us any questions!
-                </p>
-
-                <h3>Why are you using an auction and not a bonding curve?</h3>
-                <p>
-                    We&apos;re using a Dutch auction process to maximize fair
-                    distribution and minimize the gas wars. The Dutch auction is
-                    essential for the premise of releasing sequence batches,
-                    otherwise there will just be a dumb land grab if we let
-                    people mint however many numbers they want as long as
-                    they&apos;re first and pay highest gas. That&apos;s not
-                    fair. And it subtracts 90% of the fun.
-                </p>
-
-                <h3>Why is there no artwork with the NFT?</h3>
-                <p>
-                    Since we’re creating a primitive, we have purposefully
-                    decided to keep the visual art to a minimum. It is possible
-                    for us or other projects to do so in the future. We consider
-                    our art to be this project itself and the logic behind it.
-                </p>
-
-                <h3>Are you a DAO?</h3>
-                <p>
-                    No. We’re just a team of four people sitting in front of
-                    Etherscan, wondering when our transaction will be mined. We
-                    have started and joined DAOs and we’d be happy to see others
-                    form DAOs around this project.
-                </p>
-
-                <h2>Project Economics</h2>
-
-                <h3>Why will MemeNumbers be valuable?</h3>
-                <p>
-                    All MemeNumbers are unique, so there can only be one “420,”
-                    or “1,” or “999999999,” or whatever string of numbers you
-                    deem valuable. Since the Number Generator issues numbers at
-                    random, it’s very unlikely it will generate the exact number
-                    you want. That’s where your skills using the Burn Operator
-                    comes in. The value you create is one part luck, two parts
-                    galaxy brain.
-                </p>
-
-                <h3>
-                    If I mint a MemeNumber, can I resell it like any other NFT?
-                </h3>
-                <p>
-                    Yes. Absolutely. You can use OpenSea, Rarible, or any site
-                    that supports ERC-721 trading. To encourage trading, we
-                    decided not to charge for royalties from the sale of
-                    MemeNumbers on secondary markets.
-                </p>
-
-                <h3>How many MemeNumbers will there be?</h3>
-                <p>
-                    The size of the MemeNumbers collection depends on how
-                    quickly the auctions are closing, how many are being minted
-                    when an auction is won, and how many numbers are being
-                    burned. Therefore, we cannot predict the number of
-                    MemeNumbers.
-                </p>
-
-                <h3>Do you have a token (ERC-20)?</h3>
-                <p>
-                    No. You are free to create one and airdrop them to our
-                    community. If you do, you must:{' '}
-                </p>
-                <ol>
-                    <li>Promise not to rug them</li>
-                    <li>make it clear we did not create them.</li>
-                </ol>
-
-                <h2>Technical Details</h2>
-
-                <h3>Can I see the metadata?</h3>
-                <p>
-                    Yes. The entire NFT consists of a single piece of metadata —
-                    the number itself — which acts as the token ID.
-                </p>
-
-                <h3>Why can’t I go negative?</h3>
-                <p>
-                    We believe in unity and positivity. But that’s not why you
-                    can’t go negative. The ERC-721 standard does not support
-                    negative token IDs.
-                </p>
-
-                <h3>Can you speed up or slow down the minting?</h3>
-                <p>
-                    Nope. The minting should continue long after we have left
-                    this mortal coil and our consciousnesses have been deployed
-                    in the big blockchain in the sky.
-                </p>
-
-                <h3>What can I build on top of MemeNumbers?</h3>
-                <p>Anything you want. Please enjoy this primitive.</p>
-
-                <h3>Can the number distribution algorithm be changed?</h3>
-                <p>
-                    The number distribution algorithm is the heart and soul of
-                    MemeNumbers. We want to make it as immutable and transparent
-                    as possible. We are proud to have made the decision to make
-                    it on-chain and non-upgradeable.
-                </p>
-
-                <h2>Credits</h2>
-
-                <h3>Inspirations</h3>
+                <Question>What inspired you to create MemeNumbers?</Question>
                 <p>
                     The team would like to thank the following projects, their
                     communities, and the people behind them for inspiring us. We
@@ -371,8 +246,29 @@ const Faq: Page = () => {
                     <li>Nouns.wtf</li>
                     <li>Loot Project</li>
                 </ul>
+                <p>
+                    We are passionate about creating “primitives” for the
+                    Ethereum ecosystem. Primitives are basic building blocks of
+                    a metaverse that others can use to create a complex and rich
+                    universe. We set out to design:
+                </p>
+                <ol>
+                    <li>a 100% Ethereum-chain-only primitive that,</li>
+                    <li>
+                        minimizes the chance of gas wars for fair distribution
+                        and,
+                    </li>
+                    <li>
+                        allows for everyone to have fun and build on top for all
+                        eternity.
+                    </li>
+                </ol>
+                <p>
+                    We hope you enjoy our project. This is our love letter to
+                    Ethereum and its amazing community. ❤️
+                </p>
             </div>
-        </div>
+        </Container>
     )
 }
 

@@ -99,9 +99,9 @@ const Layout: React.FC = ({ children }) => {
                             OpenSea
                         </NavItem>
                     </Link>
-                    {/* <Link href="/faq" passHref> */}
-                    {/*     <NavItem>FAQ</NavItem> */}
-                    {/* </Link> */}
+                    <Link href="/faq" passHref>
+                        <NavItem>FAQ</NavItem>
+                    </Link>
                 </CenterNav>
 
                 <RightNav>
@@ -112,6 +112,14 @@ const Layout: React.FC = ({ children }) => {
             <Content>{children}</Content>
 
             <Footer>
+                <FooterNavItem
+                    href="https://twitter.com/memenumbersnft"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Twitter
+                </FooterNavItem>
+
                 <FooterNavItem
                     href="https://discord.gg/EgA3TvxYTv"
                     target="_blank"

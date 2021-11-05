@@ -9,7 +9,7 @@ export interface ContractState {
 export async function getContractState(
     contract: ethers.Contract
 ): Promise<ContractState> {
-    console.log('querying contract...')
+    // console.log('querying contract...')
     const [auctionStarted, price, forSale] = await Promise.all([
         contract.auctionStarted(),
         contract.currentPrice(),
