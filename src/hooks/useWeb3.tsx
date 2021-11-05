@@ -16,6 +16,7 @@ interface ContextData {
     onboard?: API
     contractState?: ContractState
     contract?: ethers.Contract
+    defaultContract: ethers.Contract
 }
 
 interface ContextActions {
@@ -25,8 +26,17 @@ interface ContextActions {
 
 type Context = [ContextData, ContextActions]
 
+let defaultProvider: providers.JsonRpcProvider = new providers.InfuraProvider(1)
+let defaultContract = new ethers.Contract(
+    Config(1).contractAddress!,
+    Abi,
+    defaultProvider
+)
+let provider: providers.JsonRpcProvider | undefined
+let contract: ethers.Contract | undefined
+
 const Web3Context = React.createContext<Context>([
-    {},
+    { defaultContract },
     {
         ready: async () => {
             return false
@@ -34,10 +44,6 @@ const Web3Context = React.createContext<Context>([
         disconnect: () => {},
     },
 ])
-
-let defaultProvider: providers.JsonRpcProvider = new providers.InfuraProvider(1)
-let provider: providers.JsonRpcProvider = defaultProvider
-let contract = new ethers.Contract(Config(1).contractAddress!, Abi, provider)
 export const Web3Provider: React.FC<{}> = ({ children }) => {
     const [address, setAddress] = useState<string>()
     const [ens, setEns] = useState<Ens>()
@@ -53,29 +59,31 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
             ens: setEns,
             network: async (networkId: number) => {
                 console.log('network changed: ', networkId)
-                contract.removeAllListeners()
+                if (!networkId) return
+
+                defaultContract.removeAllListeners()
                 defaultProvider.removeAllListeners()
                 defaultProvider = new providers.InfuraProvider(networkId)
-                contract = new ethers.Contract(
+                defaultContract = new ethers.Contract(
                     Config(networkId).contractAddress!,
                     Abi,
                     defaultProvider
                 )
 
-                ////get contract data and set listener
-                //const contractState = await getContractState(contract)
-                //contract.on('Refresh', async () => {
-                //    let currentState = await getContractState(contract)
-                //    setContractState(currentState)
-                //})
-                //setContractState(contractState)
+                //get contract data and set listener
+                const contractState = await getContractState(defaultContract)
+                defaultContract.on('Refresh', async () => {
+                    let currentState = await getContractState(defaultContract)
+                    setContractState(currentState)
+                })
+                setContractState(contractState)
 
                 // Setup price refresh on defaultProvider
-                provider.on('block', async (block) => {
-                    console.log(`${networkId} - ${block}!`)
+                defaultProvider.on('block', async (_block) => {
+                    // console.log(`${networkId} - ${block}!`)
                     try {
                         const [auctionStarted, price] = await updatePrice(
-                            contract
+                            defaultContract
                         )
                         setContractState((prev: ContractState | undefined) => {
                             return prev
@@ -86,6 +94,14 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
                         console.log('CONTRACT ERROR')
                     }
                 })
+
+                if (provider) {
+                    contract = new ethers.Contract(
+                        Config(networkId).contractAddress!,
+                        Abi,
+                        provider
+                    )
+                }
                 setNetwork(networkId)
             },
             balance: setBalance,
@@ -99,46 +115,51 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
 
                     window.localStorage.setItem('selectedWallet', wallet.name!)
                 } else {
-                    provider = defaultProvider
+                    provider = undefined
+                    contract = undefined
                     setWallet(undefined)
                 }
             },
         })
-
         setOnboard(onboard)
 
         // Get contract data and setup listeners on default contract
         ;(async () => {
-            const contractState = await getContractState(contract)
-            contract.on('Refresh', async () => {
-                let currentState = await getContractState(contract)
+            const contractState = await getContractState(defaultContract)
+            defaultContract.on('Refresh', async () => {
+                let currentState = await getContractState(defaultContract)
                 setContractState(currentState)
             })
             setContractState(contractState)
         })()
 
         // Setup price refresh on defaultProvider
-        defaultProvider.on('block', async (block) => {
+        defaultProvider.on('block', async (_block) => {
             try {
-                console.log(`mainnet - ${block}!`)
-                const [auctionStarted, price] = await updatePrice(contract)
+                // console.log(`mainnet - ${block}!`)
+                const [auctionStarted, price] = await updatePrice(
+                    defaultContract
+                )
                 setContractState((prev: ContractState | undefined) => {
                     return prev ? { ...prev, auctionStarted, price } : prev
                 })
             } catch (e) {
-                console.log('CONTRACT ERROR')
+                console.error(`contract error: ${e}`)
             }
         })
     }, [])
 
-    // useEffect(() => {
-    //     const previouslySelectedWallet = window.localStorage.getItem(
-    //         'selectedWallet'
-    //     )
-    //     if (previouslySelectedWallet && onboard) {
-    //         onboard.walletSelect(previouslySelectedWallet)
-    //     }
-    // }, [onboard])
+    useEffect(() => {
+        const previouslySelectedWallet = window.localStorage.getItem(
+            'selectedWallet'
+        )
+        if (previouslySelectedWallet && onboard) {
+            ;(async () => {
+                await onboard.walletSelect(previouslySelectedWallet)
+                await onboard.walletCheck()
+            })()
+        }
+    }, [onboard])
 
     async function readyToTransact() {
         if (!provider) {
@@ -152,7 +173,11 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
 
     const disconnectWallet = () => {
         if (onboard) {
-            onboard.walletReset()
+            try {
+                onboard.walletReset()
+            } catch (e) {
+                console.error(e)
+            }
             setBalance(undefined)
             setAddress(undefined)
             window.localStorage.removeItem('selectedWallet')
@@ -171,6 +196,7 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
                     onboard,
                     contractState,
                     contract,
+                    defaultContract,
                 },
                 { ready: readyToTransact, disconnect: disconnectWallet },
             ]}

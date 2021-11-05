@@ -7,12 +7,17 @@ import { Status, Button, Select, Submit, LongInput, Field } from '../components'
 import { Result } from '../types'
 
 interface Props {
-    contract: ethers.Contract
-    account: string
+    account?: string
+    contract?: ethers.Contract
+    readyToTransact: () => Promise<boolean>
 }
 
 //#FIXME use debounced query instead of two step button setup/query
-const Operations: React.FC<Props> = ({ account, contract }) => {
+const Operations: React.FC<Props> = ({
+    account,
+    contract,
+    readyToTransact,
+}) => {
     const [num, setNum] = useState('')
     const [numTwo, setNumTwo] = useState('')
     const [op, setOp] = useState('a')
@@ -44,14 +49,15 @@ const Operations: React.FC<Props> = ({ account, contract }) => {
 
     const handlePreview = async (evt: any) => {
         evt.preventDefault()
-        if (!num || !numTwo) return
+        let ready = await readyToTransact()
+        if (!ready || !contract || !num || !numTwo) return
 
         try {
             const firstNum = BigNumber.from(num)
             const secondNum = BigNumber.from(numTwo)
             const isOwner = await confirmOwnership(
                 contract,
-                account,
+                account!,
                 firstNum,
                 secondNum
             )
@@ -71,6 +77,9 @@ const Operations: React.FC<Props> = ({ account, contract }) => {
 
     const handleBurn = async (evt: any) => {
         evt.preventDefault()
+        let ready = await readyToTransact()
+        if (!ready || !contract || !num || !numTwo) return
+
         try {
             if (!state || state.submitting) return
             const { firstNum, secondNum } = state

@@ -13,15 +13,17 @@ const Selection = styled.div`
 `
 
 interface DutchAuctionProps {
-    contract: ethers.Contract
-    contractState: ContractState
     account?: string | null
+    contract?: ethers.Contract
+    contractState: ContractState
+    readyToTransact: () => Promise<boolean>
 }
 
 const DutchAuction: React.FC<DutchAuctionProps> = ({
     contract,
     contractState,
     account,
+    readyToTransact,
 }) => {
     const { forSale, price } = contractState
     const [num, setNum] = useState(trySelectSale(contractState))
@@ -30,6 +32,9 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
     const onSelectNum = (selection: string) => setNum(selection)
     const handleMint = async (evt: any) => {
         evt.preventDefault()
+        let ready = await readyToTransact()
+        if (!ready || !contract) return
+
         try {
             let selectedNum = BigNumber.from(num)
 
@@ -42,11 +47,13 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             }
 
             if (!exists) {
-                alert('nope')
+                setResult({
+                    message: `MemeNumber is not part of the current batch: ${selectedNum}`,
+                })
                 return
             }
 
-            let res = await contract.mint(account, selectedNum, {
+            let res = await contract!.mint(account, selectedNum, {
                 value: price,
             })
 
@@ -65,8 +72,11 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
 
     const handleMintAll = async (evt: any) => {
         evt.preventDefault()
+        let ready = await readyToTransact()
+        if (!ready || !contract) return
+
         try {
-            let res = await contract.mintAll(account, {
+            let res = await contract!.mintAll(account, {
                 value: price,
             })
 
@@ -90,22 +100,20 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
         <div>
             <AuctionItem contractState={contractState} onSelect={onSelectNum} />
 
-            {account && (
-                <form onSubmit={handleMint}>
-                    <Field>Mint Number:</Field>
-                    <LongInput
-                        type="text"
-                        value={num}
-                        onChange={(e) => setNum(e.target.value)}
-                    />
-                    <Selection>
-                        <Submit value="Mint" />
-                    </Selection>
-                    <Selection>
-                        <Button onClick={handleMintAll}>Mint All</Button>
-                    </Selection>
-                </form>
-            )}
+            <form onSubmit={handleMint}>
+                <Field>Mint Number:</Field>
+                <LongInput
+                    type="text"
+                    value={num}
+                    onChange={(e) => setNum(e.target.value)}
+                />
+                <Selection>
+                    <Submit value="Mint" />
+                </Selection>
+                <Selection>
+                    <Button onClick={handleMintAll}>Mint All</Button>
+                </Selection>
+            </form>
             {result && <Status isError={result.err}>{result.message}</Status>}
         </div>
     )

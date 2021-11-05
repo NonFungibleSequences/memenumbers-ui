@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { formatEther } from '@ethersproject/units'
 
 import { ContractState } from '../utils/contract'
-import { Field, Value } from '../components'
+import { Field, Value, EtherSymbol } from '../components'
 
 const Set = styled.div`
     display: inline-block;
@@ -26,17 +26,17 @@ const Num = styled.span`
     }
 `
 
-const DelNum = styled.del`
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 20px;
+// const DelNum = styled.del`
+//     display: inline-block;
+//     vertical-align: top;
+//     margin-right: 20px;
 
-    color: rgba(166, 250, 255, 1);
-    font-family: Pangolin;
-    font-weight: Regular;
-    font-size: 36px;
-    opacity: 1;
-`
+//     color: rgba(166, 250, 255, 1);
+//     font-family: Pangolin;
+//     font-weight: Regular;
+//     font-size: 36px;
+//     opacity: 1;
+// `
 
 interface DutchAuctionProps {
     contractState: ContractState
@@ -69,7 +69,9 @@ const AuctionItem: React.FC<DutchAuctionProps> = ({
             </Set>
             <Set>
                 <Field>Price:</Field>
-                <Value>{formatEther(price)}</Value>
+                <Value>
+                    {formatEther(price)} <EtherSymbol />
+                </Value>
             </Set>
 
             <Field>For Sale:</Field>

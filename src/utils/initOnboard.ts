@@ -19,7 +19,7 @@ export function initOnboard(subscriptions: Subscriptions) {
                 {
                     walletName: 'walletConnect',
                     preferred: true,
-                    infuraKey: 'cea9deb6467748b0b81b920b005c10c1',
+                    infuraKey: infuraId,
                 },
                 {
                     walletName: 'trezor',

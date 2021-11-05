@@ -17,10 +17,10 @@ import useWeb3 from '../src/hooks/useWeb3'
 
 const Home: Page = () => {
     // const { basePath } = useRouter()
-    // const { account } = useWeb3React()
-    // const [{ contract }, _, contractState] = useContract()
-
-    const [{ address, contractState, contract }, actions] = useWeb3()
+    const [
+        { address, contractState, contract, defaultContract },
+        actions,
+    ] = useWeb3()
 
     // #FIXME the basepath for the favicon is a hack for ghpages because it is hosted at a
     // specific project path.  Should probably be removed later
@@ -35,22 +35,28 @@ const Home: Page = () => {
             <Main>
                 {/* <Web2 /> */}
 
-                {contractState && contract && (
+                {contractState && (
                     <div>
                         <Segment />
                         <DutchAuction
                             contractState={contractState}
                             contract={contract}
                             account={address}
+                            readyToTransact={actions.ready}
                         />
 
                         <Segment />
-                        <OwnerCheck account={address} contract={contract} />
+                        <OwnerCheck
+                            account={address}
+                            contract={defaultContract}
+                        />
 
                         <Segment />
-                        {address && (
-                            <Operations account={address} contract={contract} />
-                        )}
+                        <Operations
+                            account={address}
+                            contract={contract}
+                            readyToTransact={actions.ready}
+                        />
                     </div>
                 )}
             </Main>

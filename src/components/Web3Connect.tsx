@@ -10,34 +10,40 @@ const P = styled.p`
 `
 
 const Web3Connect: React.FC = () => {
-    const [{ address, network, onboard }, { ready, disconnect }] = useWeb3()
+    const [{ address, network, onboard, ens }, { disconnect }] = useWeb3()
 
-    const buttonContent = address ? shorten(address) : 'Connect Wallet'
-    // ? 'Connecting'
-    // : 'Connect Wallet'
+    const buttonContent = address
+        ? ens
+            ? ens.name
+            : shorten(address)
+        : 'Connect'
+
+    const isConnected = !!address
 
     return (
         <>
             {network && network === RINKEBY ? <P>(Rinkeby)</P> : null}
 
             <Button
-                disabled={!!address}
+                disabled={isConnected}
                 key="connect"
                 onClick={async () => {
-                    await onboard?.walletSelect()
-                    await onboard?.walletCheck()
+                    if (await onboard?.walletSelect())
+                        await onboard?.walletCheck()
                 }}
             >
                 {buttonContent}
             </Button>
-            <Button
-                key="disconnect"
-                onClick={async () => {
-                    onboard?.walletReset()
-                }}
-            >
-                Disconnect
-            </Button>
+            {isConnected && (
+                <Button
+                    key="disconnect"
+                    onClick={async () => {
+                        disconnect()
+                    }}
+                >
+                    Disconnect
+                </Button>
+            )}
         </>
     )
 }
