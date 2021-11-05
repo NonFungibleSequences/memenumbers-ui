@@ -7,7 +7,10 @@ import Layout from '../src/components/Layout'
 import { DefaultFont } from '../src/components'
 
 const Container = styled.div`
-    ${DefaultFont}// display: flex;
+    ${DefaultFont}
+    color: rgba(255,255,255,1);
+
+    // display: flex;
     // flex-direction: row;
 
     // @media (max-width: 768px) {
@@ -15,9 +18,25 @@ const Container = styled.div`
     // }
 `
 
+const A = styled.a`
+    color: rgba(255, 255, 255, 1);
+`
+
 const Question = styled.h2`
     color: rgba(166, 250, 255, 1);
 `
+
+const StyledLink: React.FC<{
+    href: string
+    target?: string
+    rel?: string
+}> = ({ children, href, target, rel }) => (
+    <Link href={href} passHref>
+        <A target={target} rel={rel}>
+            {children}
+        </A>
+    </Link>
+)
 
 const Faq: Page = () => {
     return (
@@ -40,11 +59,13 @@ const Faq: Page = () => {
                     two or more Numbers, you can do math with them to create a
                     new Number!
                 </p>
+
                 <Question>Is this a NFT?</Question>
                 <p>
                     Yes, MemeNumbers are standard ERC-721 on the Ethereum
                     blockchain.
                 </p>
+
                 <Question>But where’s the art?</Question>
                 <p>
                     MemeNumbers are not typical Jpegs. It’s in a class called
@@ -57,20 +78,22 @@ const Faq: Page = () => {
                     actual data on the blockchain; the sum of it all is
                     considered the “art”.
                 </p>
+
                 <Question>How are the numbers chosen?</Question>
                 <p>
                     The numbers are randomly generated using the blockhash as
                     the seed. The possible range of numbers are 0 through
                     Uint255. You can read the code for the number distribution
                     algorithm on the{' '}
-                    <a
+                    <A
                         href="https://etherscan.io/address/0x98afe7a8d28bbc88dcf41f8e06d97c74958a47dc#code"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
                         contract.
-                    </a>
+                    </A>
                 </p>
+
                 <Question>
                     Can the number distribution algorithm be changed?
                 </Question>
@@ -79,29 +102,37 @@ const Faq: Page = () => {
                     soul of MemeNumbers. We made it as immutable and transparent
                     as possible. The algorithm is on chain and non-upgradeable.
                 </p>
+
                 <Question>When was MemeNumbers launched?</Question>
                 <p>
                     We published the smart contract on{' '}
-                    <a
+                    <A
                         href="https://etherscan.io/tx/0x354f2d41e0c6f8bd6f5cce131510393570c45b491b9bc29d2de44bf75b1257fd"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
                         October 30th, 2021
-                    </a>
+                    </A>
                 </p>
+
                 <Question>How long will MemeNumbers be up?</Question>
                 <p>
                     Forever! Everything is on-chain so as long as the Ethereum
                     blockchain exists, MemeNumbers will exist.
                 </p>
+
                 <Question>OK, how do I get some MemeNumbers?</Question>
                 <p>
                     You can get MemeNumbers in one of three ways. By winning at
-                    the <Link href="/">Dutch Auction</Link>, by buying off of{' '}
-                    <Link href="https://opensea.io/collection/memenumbers">
+                    the <StyledLink href="/">Dutch Auction</StyledLink>, by
+                    buying off of{' '}
+                    <A
+                        href="https://opensea.io/collection/memenumbers"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         OpenSea
-                    </Link>
+                    </A>
                     , and by doing math with two Numbers to create a new Number!
                     The Dutch auction starts from Ξ5 (Eth), dropping down to
                     Ξ0.0 linearly in one hour. When you mint, you pay the exact
@@ -109,24 +140,37 @@ const Faq: Page = () => {
                     then the price will sit at Ξ0 until someone mint (for
                     free!). If you’d rather mint directly on the contract, you
                     can{' '}
-                    <Link href="https://mirror.xyz/0x074b48C17119e61FCDf81D46fF6307F24BAC5D82/6_nFFFLb_PMtI88hOCyt5XxpuK_70mbkCCPxjz-BWDE">
+                    <A
+                        href="https://mirror.xyz/0x074b48C17119e61FCDf81D46fF6307F24BAC5D82/6_nFFFLb_PMtI88hOCyt5XxpuK_70mbkCCPxjz-BWDE"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         these instructions
-                    </Link>
+                    </A>
                     . To buy on OpenSea, just go to{' '}
-                    <Link href="https://opensea.io/collection/memenumbers">
+                    <A
+                        href="https://opensea.io/collection/memenumbers"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         the collection
-                    </Link>{' '}
-                    To do math with your Numbers, go to{' '}
-                    <Link href="/">Dutch Auction</Link> and plug in your Numbers
-                    and choose the desired operator (“a” for addition, “s” for
-                    subtraction, “m” for multiplication, “d” for division.) The
-                    resulting Number will be minted into your wallet, while the
-                    two Numbers used for the operation will be burned. You can
-                    also do math directly on the{' '}
-                    <Link href="https://mirror.xyz/0x074b48C17119e61FCDf81D46fF6307F24BAC5D82/DKPcui-ri2s8tGKRyOVOMBXBtvwOJLMVTkyVff56zu8">
+                    </A>
+                    . To do math with your Numbers, go to{' '}
+                    <StyledLink href="/">Dutch Auction</StyledLink> and plug in
+                    your Numbers and choose the desired operator (“a” for
+                    addition, “s” for subtraction, “m” for multiplication, “d”
+                    for division.) The resulting Number will be minted into your
+                    wallet, while the two Numbers used for the operation will be
+                    burned. You can also do math directly on the{' '}
+                    <A
+                        href="https://mirror.xyz/0x074b48C17119e61FCDf81D46fF6307F24BAC5D82/DKPcui-ri2s8tGKRyOVOMBXBtvwOJLMVTkyVff56zu8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         contract
-                    </Link>
+                    </A>
                 </p>
+
                 <Question>Who are you?</Question>
                 <p>
                     The four creators of MemeNumbers are the developers, a
@@ -134,44 +178,44 @@ const Faq: Page = () => {
                 </p>
                 <ul>
                     <li>
-                        <a
+                        <A
                             href="https://twitter.com/benhuh"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             Huh.eth
-                        </a>
+                        </A>
                         <p>
                             Huh.eth has launched a few DAOs, including the
                             NFT-focused collective{' '}
-                            <a
+                            <A
                                 href="https://twitter.com/crisisdao"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 Crisis DAO
-                            </a>
+                            </A>
                             , and is a General Partner in a small crypto fund.
                             He is an internet culture and meme pioneer from his
                             days at{' '}
-                            <a
+                            <A
                                 href="https://en.wikipedia.org/wiki/Ben_Huh"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 Cheezburger
-                            </a>
+                            </A>
                             , the purveyors of lolcats and fail memes.
                         </p>
                     </li>
                     <li>
-                        <a
+                        <A
                             href="https://twitter.com/nicwn"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             Nicwn
-                        </a>
+                        </A>
                         <p>
                             Nick started out as a data guy at Microsoft & Yahoo!
                             He had led the creation of LEGO Ideas. Left the tech
@@ -182,22 +226,22 @@ const Faq: Page = () => {
                         </p>
                     </li>
                     <li>
-                        <a
+                        <A
                             href="https://twitter.com/dt_mugen"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             Denis
-                        </a>
+                        </A>
                         <p>
                             Denis{' '}
-                            <a
+                            <A
                                 href="https://github.com/dt665m"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 (dt665m)
-                            </a>{' '}
+                            </A>{' '}
                             was an indie game developer who recently started
                             focusing on the intersection between games and
                             blockchains. He has been working on projects to make
@@ -206,32 +250,32 @@ const Faq: Page = () => {
                         </p>
                     </li>
                     <li>
-                        <a
+                        <A
                             href="https://twitter.com/shazow"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             Shazow
-                        </a>
+                        </A>
                         <p>
                             Shazow was one of the two devs behind the{' '}
-                            <a
+                            <A
                                 href="https://thousandetherhomepage.com/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 Thousand Ether Homepage
-                            </a>
+                            </A>
                             , which launched in 2017 prior to the ERC-721
                             standard being adopted. It has since been wrapped
                             and tradeable on{' '}
-                            <a
+                            <A
                                 href="https://opensea.io/collection/thousand-ether-homepage"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 OpenSea
-                            </a>
+                            </A>
                             .
                         </p>
                     </li>

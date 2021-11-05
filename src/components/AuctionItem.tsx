@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { formatEther } from '@ethersproject/units'
 
 import { ContractState } from '../utils/contract'
-import { Field, Value, EtherSymbol } from '../components'
+import { PangolinFont, Field, Value, EtherSymbol } from '../components'
 
 const Set = styled.div`
     display: inline-block;
@@ -12,12 +12,11 @@ const Set = styled.div`
 `
 
 const Num = styled.span`
+    ${PangolinFont}
     vertical-align: top;
     margin-right: 20px;
 
     color: rgba(166, 250, 255, 1);
-    font-family: Pangolin;
-    font-weight: Regular;
     font-size: 36px;
     opacity: 1;
 
@@ -27,13 +26,11 @@ const Num = styled.span`
 `
 
 // const DelNum = styled.del`
+//     ${PangolinFont}
 //     display: inline-block;
 //     vertical-align: top;
 //     margin-right: 20px;
 
-//     color: rgba(166, 250, 255, 1);
-//     font-family: Pangolin;
-//     font-weight: Regular;
 //     font-size: 36px;
 //     opacity: 1;
 // `
