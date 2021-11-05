@@ -49,9 +49,11 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             if (!exists) {
                 setResult({
                     message: `MemeNumber is not part of the current batch: ${selectedNum}`,
+                    err: new Error('invalid memenumber'),
                 })
                 return
             }
+            console.log(contract)
 
             let res = await contract!.mint(account, selectedNum, {
                 value: price,
@@ -61,10 +63,10 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             setResult({
                 message: `Mint Transaction Sent, Tx Hash: ${res.hash}`,
             })
-        } catch (e) {
-            console.log(`tx response: ${e}`)
+        } catch (e: any) {
+            console.log(`tx response: ${e.message}`)
             setResult({
-                message: `Mint Transaction Error: ${(e as Error).toString()}`,
+                message: `Mint Transaction Error: ${e.message}`,
                 err: e as Error,
             })
         }
@@ -84,10 +86,10 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             setResult({
                 message: `Mint All Sent, Tx Hash: ${res.hash}`,
             })
-        } catch (e) {
-            console.log(`tx response: ${e}`)
+        } catch (e: any) {
+            console.log(`tx response: ${e.message}`)
             setResult({
-                message: `Mint All Error: ${(e as Error).toString()}`,
+                message: `Mint All Error: ${e.message}`,
                 err: e as Error,
             })
         }

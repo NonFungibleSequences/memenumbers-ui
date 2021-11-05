@@ -13,13 +13,12 @@ const Web3Connect: React.FC = () => {
     const [{ address, network, onboard, ens }, { disconnect }] = useWeb3()
 
     const buttonContent = address
-        ? ens
+        ? ens?.name
             ? ens.name
             : shorten(address)
         : 'Connect'
 
     const isConnected = !!address
-
     return (
         <>
             {network && network === RINKEBY ? <P>(Rinkeby)</P> : null}
