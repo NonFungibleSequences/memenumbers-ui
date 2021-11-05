@@ -77,9 +77,9 @@ const Segment = styled.div`
     width: 100%;
     height: 3px;
     background: rgba(196, 196, 196, 1);
-    opacity: 1;
-    // position: absolute;
+    opacity: 0.1;
     overflow: hidden;
+    margin: 2em auto;
 `
 
 // sad

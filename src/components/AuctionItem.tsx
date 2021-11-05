@@ -20,6 +20,7 @@ const Num = styled.span`
     font-weight: Regular;
     font-size: 36px;
     opacity: 1;
+    cursor: pointer;
 
     &:hover {
         opacity: 0.4;

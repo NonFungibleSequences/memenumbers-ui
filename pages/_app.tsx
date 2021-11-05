@@ -7,14 +7,20 @@ import { createGlobalStyle } from 'styled-components'
 import { Web3Provider } from '../src/hooks/useWeb3'
 
 const GlobalStyle = createGlobalStyle`
-html * {
+body {
 	color: rgba(255,255,255,1);
-	// font-family: Fredericka the Great;
-	// font-weight: Regular;
+	font-family: Fredericka the Great;
+	font-weight: Regular;
+	background: rgba(51,51,51,1);
 }
 
-body {
-	background: rgba(51,51,51,1);
+a {
+    color: rgba(248,255,166,0.8);
+}
+
+#__next {
+    max-width: 800px;
+    margin: 0 auto;
 }
 `
 

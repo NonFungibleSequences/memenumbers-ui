@@ -62,6 +62,10 @@ export const Select = styled.select`
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 
+    height: 2.1rem;
+    min-width: 6em;
+    margin: 2px;
+
     &:active {
         background-color: #f1ac15;
     }
@@ -77,6 +81,10 @@ export const Submit = styled.input.attrs({
     outline: none;
     transition: 0.15s;
     text-align: center;
+
+    height: 2.1rem;
+    min-width: 6em;
+    margin: 2px;
 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -95,6 +103,10 @@ export const Button = styled.button`
     outline: none;
     transition: 0.15s;
     text-align: center;
+
+    height: 2.1rem;
+    min-width: 6em;
+    margin: 2px;
 
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
