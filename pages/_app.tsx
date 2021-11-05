@@ -8,9 +8,6 @@ import { Web3Provider } from '../src/hooks/useWeb3'
 
 const GlobalStyle = createGlobalStyle`
 body {
-	color: rgba(255,255,255,1);
-	font-family: Fredericka the Great;
-	font-weight: Regular;
 	background: rgba(51,51,51,1);
 }
 
