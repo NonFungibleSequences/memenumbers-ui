@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import useWeb3 from '../hooks/useWeb3'
 import { Button } from './'
-import { RINKEBY } from '../config'
+import { RINKEBY, supportedChains } from '../config'
 
 const P = styled.p`
     padding: 10px;
@@ -18,10 +18,18 @@ const Web3Connect: React.FC = () => {
             : shorten(address)
         : 'Connect'
 
+    const networkDisplay = network
+        ? supportedChains.includes(network)
+            ? network === RINKEBY
+                ? '(Rinkeby)'
+                : undefined
+            : 'Unsupported Network!'
+        : undefined
+
     const isConnected = !!address
     return (
         <>
-            {network && network === RINKEBY ? <P>(Rinkeby)</P> : null}
+            {networkDisplay && <P>{networkDisplay}</P>}
 
             <Button
                 disabled={isConnected}

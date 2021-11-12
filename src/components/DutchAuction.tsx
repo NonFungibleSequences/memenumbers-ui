@@ -55,7 +55,7 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
             }
             console.log(contract)
 
-            let res = await contract!.mint(account, selectedNum, {
+            let res = await contract.mint(account, selectedNum, {
                 value: price,
             })
 
@@ -78,7 +78,7 @@ const DutchAuction: React.FC<DutchAuctionProps> = ({
         if (!ready || !contract) return
 
         try {
-            let res = await contract!.mintAll(account, {
+            let res = await contract.mintAll(account, {
                 value: price,
             })
 

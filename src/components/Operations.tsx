@@ -56,22 +56,14 @@ const Operations: React.FC<Props> = ({
         try {
             const firstNum = BigNumber.from(num)
             const secondNum = BigNumber.from(numTwo)
-            const isOwner = await confirmOwnership(
-                contract,
-                account!,
-                firstNum,
-                secondNum
-            )
             // FIXME: We should not require ownership here just to try numbers. Perhaps we should just print a warning if you're not the owner and the next txn will fail.
-            if (isOwner) {
-                let res = await contract.operate(firstNum, op, secondNum)
-                setState({
-                    firstNum,
-                    secondNum,
-                    preview: res,
-                    submitting: false,
-                })
-            }
+            let res = await contract.operate(firstNum, op, secondNum)
+            setState({
+                firstNum,
+                secondNum,
+                preview: res,
+                submitting: false,
+            })
         } catch (e) {
             console.log(`tx response: ${e}`)
         }
@@ -85,6 +77,20 @@ const Operations: React.FC<Props> = ({
         try {
             if (!state || state.submitting) return
             const { firstNum, secondNum } = state
+            const isOwner = await confirmOwnership(
+                contract,
+                account!,
+                firstNum,
+                secondNum
+            )
+            if (!isOwner) {
+                setResult({
+                    message: `You do not currently own ${firstNum} and ${secondNum}`,
+                    err: new Error('not owned'),
+                })
+                return
+            }
+
             const res = await contract.burn(account, firstNum, op, secondNum)
             console.log('burn result:', res.toString())
             setResult({

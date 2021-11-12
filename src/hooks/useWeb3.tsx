@@ -9,10 +9,10 @@ import React, {
 import { ethers, providers } from 'ethers'
 import { API, Wallet, Ens } from 'bnc-onboard/dist/src/interfaces'
 
-import { ContractState, getContractState, updatePrice } from '../utils/contract'
+import { ContractState, getContractState } from '../utils/contract'
 import { initOnboard } from '../utils/initOnboard'
 import Abi from '../abi/MemeNumbersAbi.json'
-import Config from '../config'
+import Config, { supportedChains } from '../config'
 
 interface ContextData {
     address?: string
@@ -81,7 +81,7 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
                         wallet.provider
                     )
 
-                    window.localStorage.setItem('selectedWallet', wallet.name!)
+                    // window.localStorage.setItem('selectedWallet', wallet.name!)
                 } else {
                     provider = undefined
                     setActiveContract(undefined)
@@ -103,22 +103,27 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
         )
     }, [])
 
-    useEffect(() => {
-        const previouslySelectedWallet = window.localStorage.getItem(
-            'selectedWallet'
-        )
-        if (previouslySelectedWallet && onboard) {
-            ;(async () => {
-                await onboard.walletSelect(previouslySelectedWallet)
-                await onboard.walletCheck()
-            })()
-        }
-    }, [onboard])
+    // useEffect(() => {
+    //     const previouslySelectedWallet = window.localStorage.getItem(
+    //         'selectedWallet'
+    //     )
+    //     if (previouslySelectedWallet && onboard) {
+    //         ;(async () => {
+    //             await onboard.walletSelect(previouslySelectedWallet)
+    //             await onboard.walletCheck()
+    //         })()
+    //     }
+    // }, [onboard])
 
     useEffect(() => {
         ;(async () => {
             console.log('network changed: ', network)
             if (!network || !onboard) return
+
+            if (!supportedChains.includes(network)) {
+                setActiveContract(undefined)
+                return
+            }
 
             onboard.config({ networkId: network })
             defaultContract.removeAllListeners()
@@ -181,7 +186,7 @@ export const Web3Provider: React.FC<{}> = ({ children }) => {
             }
             setBalance(undefined)
             setAddress(undefined)
-            window.localStorage.removeItem('selectedWallet')
+            // window.localStorage.removeItem('selectedWallet')
         }
     }
 
@@ -231,9 +236,9 @@ function subscribeState(
             const currentState = getCurrentState()
             const price = await contract.currentPrice()
 
-            console.log(
-                `current price ${currentState?.price}, new price ${price}`
-            )
+            // console.log(
+            //     `current price ${currentState?.price}, new price ${price}`
+            // )
 
             //#HACK, in case refresh event comes later than the last auto refresh from block updates
             //we should force update the forsale and auctionstarted (a full requery)
